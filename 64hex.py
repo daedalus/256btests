@@ -4,7 +4,7 @@ import fileinput
 
 
 def hexify(i):
-	return hex(int(line.replace('\n',''))).replace('0x','').replace('L','').zfill(64)
+	return hex(int(line.replace('\n','').replace('\r','').replace('0x','').replace('L',''))).zfill(64)
 
 
 for line in fileinput.input():	
