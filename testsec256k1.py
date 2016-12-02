@@ -20,8 +20,14 @@ for line in fileinput.input():
 	line = line.replace('0x','').replace('L','').replace('\n','')	
 	try:
 		i = int(line,16)
-		print hexify(int(math.sqrt((i**3)+7)) % N)
-		print hexify(int(quberoot((i**2) -7)) % N)
+		k = int(math.sqrt((i**3)+7))
+		print ((k-1) % N)
+		print (k % N)
+		print ((k+1) % N)
+		k = int(quberoot((i**2) -7))
+		print ((k-1) % N)
+		print (k % N)
+		print ((k+1) % N)
 	except:
 		pass
 
