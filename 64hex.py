@@ -15,6 +15,7 @@ for line in fileinput.input():
 	if l > 1:
 		try:
 			print hexify(int(line,16) % N)
+			#print hexify(int(line) % N)
 		except:
 			pass
 
