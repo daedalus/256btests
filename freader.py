@@ -1,10 +1,18 @@
 import sys
+import os
 
-fp = open(sys.argv[1])
+filename=sys.argv[1]
+fp = open(filename)
 i = int(sys.argv[2])
 l = int(sys.argv[3])
+flen=os.stat(filename).st_size
 
 while True:
-	i += 1
-	fp.seek(i,0)
-	print fp.read(l).encode('hex')
+	if i <= flen:
+		fp.seek(i,0)
+		print fp.read(l).encode('hex')
+		i += 1
+	else:
+		break
+
+	
