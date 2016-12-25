@@ -21,13 +21,20 @@ for line in fileinput.input():
 	try:
 		i = int(line,16)
 		k = int(math.sqrt((i**3)+7))
-		print ((k-1) % N)
-		print (k % N)
-		print ((k+1) % N)
+		print hexify((k-1) % N)
+		print hexify(k % N)
+		print hexify((k+1) % N)
 		k = int(quberoot((i**2) -7))
-		print ((k-1) % N)
-		print (k % N)
-		print ((k+1) % N)
+		print hexify((k-1) % N)
+		print hexify(k % N)
+		print hexify((k+1) % N)
+		k = int((3*(i**2))/2)
+		print hexify((k-1) % N)
+		print hexify(k % N)
+		print hexify((k+1) % N)
+	
+
+	
 	except:
 		pass
 

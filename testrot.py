@@ -32,9 +32,9 @@ for line in fileinput.input():
 			if j > SKIP:
 				a = rol(k,i,256) % N
 				b = ror(k,i,256) % N
-				if (1000000 < a):
+				if (1000000 < a and a !=k):
 					print hexify(a)
-				if (1000000 < b):
+				if (1000000 < b and a !=k):
 					print hexify(b)
 	except:
 		pass
