@@ -8,12 +8,10 @@ def rot13(test):
 	r = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM "
 	d = ""
 	for l in test:
-		f = p.find(l)
-		if (f > -1):
-			d += r[p.find(l)]
-		else:
-			d += l
+		d +=  r[p.find(l)]
 	return d
 
+#print rot13(rot13("Dario Clavijo"))
+
 for line in fileinput.input():
-	print rot13(line.replace('\n',''))
+	print rot13(line.rstrip())

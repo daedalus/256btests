@@ -22,6 +22,7 @@ for line in fileinput.input():
 		print hexify((N-k) % N)
 		print hexify((P-K) % N)
 		print hexify((k ^ b256)  % N)
+		print hexify((b256-k) % N)
 	except:
 		pass
 			 	
