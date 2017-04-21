@@ -49,7 +49,7 @@ while True:
  
 		if e > thresshold:
 		    print data.encode('hex'),e
-		i += 1
+		start += 1
 	else:
 		break
 
