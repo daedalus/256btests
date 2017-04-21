@@ -39,7 +39,7 @@ if flen == 0:
     flen=int(sys.argv[4])
 
 while True:
-	if i <= flen:
+	if start <= flen:
 		fp.seek(start,0)
 		data = fp.read(l)
 
