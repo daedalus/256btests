@@ -5,6 +5,7 @@
 import sys
 import os
 import math
+import io
 
 def shannon_entropy(data, iterator):
     """
@@ -28,10 +29,14 @@ for i in range(0,255):
 thresshold = 4.5
 
 filename=sys.argv[1]
-fp = open(filename)
+#fp = open(filename)
+fp = io.BufferedReader(io.FileIO(filename,'rb'))
+
 i = int(sys.argv[2])
 l = int(sys.argv[3])
 flen=os.stat(filename).st_size
+if flen == 0:
+    flen=int(sys.argv[4])
 
 while True:
 	if i <= flen:
@@ -43,7 +48,7 @@ while True:
 		#print data.encode('hex'),e
  
 		if e > thresshold:
-			print data.encode('hex'),e
+		    print data.encode('hex'),e
 		i += 1
 	else:
 		break
