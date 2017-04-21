@@ -16,9 +16,9 @@ def shannon_entropy(data, iterator=None):
     entropy = 0
 
     if iterator==None:
-        SET=""
+       	iterator=""
         for i in range(0,255):
-            SET+=chr(i)
+            iterator+=chr(i)
 
     for x in (ord(c) for c in iterator):
         p_x = float(data.count(chr(x)))/len(data)
