@@ -38,18 +38,23 @@ flen=os.stat(filename).st_size
 if flen == 0:
     flen=int(sys.argv[4])
 
+RSIZE=1024*128
+
 while True:
 	if start <= flen:
+		#lastdata = ""
 		fp.seek(start,0)
-		data = fp.read(l)
-
-		e = shannon_entropy(data)
-
-		#print data.encode('hex'),e
- 
-		if e > thresshold:
-		    print data.encode('hex'),e
-		start += 1
+		data = fp.read(RSIZE) 
+		for i in xrange(0,(RSIZE)):
+			s = data[i:i+l] 
+			e = shannon_entropy(s)
+			#print data.encode('hex'),e
+			if e > thresshold:
+			    print s.encode('hex'),e
+			del e
+			del s
+		del data
+		#lastdata = data
 	else:
 		break
 
