@@ -8,16 +8,16 @@ b256 = (2**256)
 
 def hexify(i):
 	return hex(i).replace('0x','').replace('L','').zfill(64)
-	
+
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
 		k = int(line,16)
 		#for i in range(1,256):
-		#	print hexify(k / i) 
-		#	print hexify(k * i) 
-		#	print hexify((k / i) % P) 
-		#	print hexify((k * i) % P) 
+		#	print hexify(k / i)
+		#	print hexify(k * i)
+		#	print hexify((k / i) % P)
+		#	print hexify((k * i) % P)
 
 		print hexify((N-k) % N)
 		print hexify((P-K) % N)
@@ -25,5 +25,5 @@ for line in fileinput.input():
 		print hexify((b256-k) % N)
 	except:
 		pass
-			 	
+
 
