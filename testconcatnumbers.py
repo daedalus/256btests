@@ -10,8 +10,8 @@ def c3(line,n):
 	c2(line.lower(),n)
 	c2(line.capitalize(),n)
 
-max = 1000
+max_concat = 1000
 for line in fileinput.input():
 	line = line.rstrip()
-	for i in xrange(0,max):
+	for i in xrange(0,max_concat):
 		c2(line,i)
