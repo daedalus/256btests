@@ -15,18 +15,18 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
-		data.append(int(line,16))	
+		data.append(int(line,16))
 	except:
 		pass
 
 
 start = 0
-end = len(data) - 1 
+end = len(data) - 1
 
 for i in range(start,end):
 	print hexify((N-data[i]) % N)
 	print hexify((P-data[i]) % N)
-	print hexify((C-data[i]) % N) 
+	print hexify((C-data[i]) % N)
 

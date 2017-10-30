@@ -17,7 +17,7 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
 		i = int(line,16)
 		k = int(math.sqrt((i**3)+7))
@@ -32,9 +32,9 @@ for line in fileinput.input():
 		print hexify((k-1) % N)
 		print hexify(k % N)
 		print hexify((k+1) % N)
-	
 
-	
+
+
 	except:
 		pass
 

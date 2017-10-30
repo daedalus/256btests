@@ -6,7 +6,7 @@ def test(i,a):
 	while len(b) <= 256:
 		if a:
 			b = bin(i).replace('0b','') + b
-		else:	
+		else:
 			b += bin(i).replace('0b','')
 		i += 1
 	return hexify(int(b,2))

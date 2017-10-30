@@ -12,12 +12,12 @@ def hexify(i):
 def test_xor(i):
 	for j in xrange(0,256):
 		k = ((i ^ j) % N)
-		print hexify(k)		
+		print hexify(k)
 
 for line in fileinput.input():
 	line = line.replace('\n','')
 	try:
-		test_xor(int(line,16))	
+		test_xor(int(line,16))
 	except:
 		pass
 

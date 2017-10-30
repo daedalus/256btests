@@ -16,7 +16,7 @@ def t(i):
 
 def t2(i,r):
 	for x in range(0-r,r):
-		j = i + x 
+		j = i + x
 		if j != i:
 			yield j
 

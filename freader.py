@@ -44,9 +44,9 @@ while True:
 	if start <= flen:
 		#lastdata = ""
 		fp.seek(start,0)
-		data = fp.read(RSIZE) 
+		data = fp.read(RSIZE)
 		for i in xrange(0,(RSIZE)):
-			s = data[i:i+l] 
+			s = data[i:i+l]
 			e = shannon_entropy(s)
 			#print data.encode('hex'),e
 			if e > thresshold:
@@ -58,4 +58,4 @@ while True:
 	else:
 		break
 
-	
+

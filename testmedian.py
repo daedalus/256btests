@@ -7,14 +7,14 @@ N = 1157920892373161954235709850086879078528375642790749043826051631415181614943
 
 def hexify(i):
 	return hex(i).replace('0x','').replace('L','').zfill(64)
-	
+
 
 j = 0
 accum = 0
 max_j = 2
 
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	if len(line) > 2 and len(line) <= (64):
 		try:
 			accum += int(line,16)
@@ -22,9 +22,9 @@ for line in fileinput.input():
 			if j >= max_j:
 				j = 0
 				accum = 0
-			
+
 			print hexify(int(accum/max_j)%N)
 
 		except:
 			pass
-			 	
+

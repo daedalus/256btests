@@ -28,13 +28,13 @@ for line in fileinput.input():
 	tmp = []
 	tmp1 = pivot(line,tmp,False)
 	tmp2 = pivot(line,tmp,True)
-	
+
 	for i in (set(sorted(tmp1+tmp2))):
 		tmp3.append(i)
 
 	if len(tmp3) > 1000000:
 		for i in tmp3:
-			print i		
-		tmp3 = []	
-	
+			print i
+		tmp3 = []
+
 

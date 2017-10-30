@@ -7,13 +7,13 @@ N = 1157920892373161954235709850086879078528375642790749043826051631415181614943
 
 def hexify(i):
 	return hex(i).replace('0x','').replace('L','').zfill(64)
-	
+
 get_bin = lambda x, n: format(x, 'b').zfill(n)
 
 rol = lambda val, r_bits, max_bits: \
     (val << r_bits%max_bits) & (2**max_bits-1) | \
     ((val & (2**max_bits-1)) >> (max_bits-(r_bits%max_bits)))
- 
+
 # Rotate right: 0b1001 --> 0b1100
 ror = lambda val, r_bits, max_bits: \
     ((val & (2**max_bits-1)) >> r_bits%max_bits) | \
@@ -24,7 +24,7 @@ SKIP = 0
 
 j=0
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
 		k = int(line,16)
 		for i in range(2,254):
@@ -38,5 +38,5 @@ for line in fileinput.input():
 					print hexify(b)
 	except:
 		pass
-			 	
+
 

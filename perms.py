@@ -19,7 +19,7 @@ def allequal(line):
 	for c in line:
 		e = (t == c)
 		t = c
-	return e	
+	return e
 
 
 def perms(tmp,i,s):
@@ -32,14 +32,14 @@ def perms(tmp,i,s):
 			for p in tmp:
 				print p
 			tmp = []
-				
-		
+
+
 for line in fileinput.input():
         try:
                 line = line.replace('\n','')
 		#if len(line) <= 100:
 		if not allequal(line):
-			perms(tmp,i,line.lower()) 
+			perms(tmp,i,line.lower())
 			perms(tmp,i,line)
 			perms(tmp,i,line.upper())
 		else:

@@ -14,4 +14,4 @@ while True:
 	if (c % 1000) == 0:
 		seed += 1
 		random.seed(seed)
-	
+

@@ -15,7 +15,7 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('\n','').replace('\r','')	
+	line = line.replace('\n','').replace('\r','')
 	print line
 	s = line.title()
 	if (s != line):
@@ -27,6 +27,6 @@ for line in fileinput.input():
 	if (s != line):
 		print s
 
-			
+
 
 

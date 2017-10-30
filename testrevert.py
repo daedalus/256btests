@@ -15,6 +15,6 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	print line[::-1]
 

@@ -15,12 +15,12 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('\n','').replace('\r','')	
+	line = line.replace('\n','').replace('\r','')
 	data.append(line)
-	
+
 
 def join2(a,b):
-	
+
 	print a.title() + " " + b
 	print a.title() + b
 	print a + " " + b.title()

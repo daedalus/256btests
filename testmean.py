@@ -16,7 +16,7 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
 		i = int(line,16)
 		if i > 0:
@@ -50,7 +50,7 @@ def invert(data):
 #data = invert(data)
 #print end, mid
 
-#print np.mean(data)	
+#print np.mean(data)
 def AM(data):
 	accum = 0
 	for i in range(0,len(data)-1):
@@ -66,7 +66,7 @@ def HM(data):
 	accum = 0
 	for i in range(0,len(data)-1):
 		accum += 1/data[i]
-	return len(data) * (accum ** -1) 
+	return len(data) * (accum ** -1)
 
 
 #print hex(AM(data))

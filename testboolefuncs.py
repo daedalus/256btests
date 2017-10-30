@@ -17,9 +17,9 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
-		data.append(int(line,16))	
+		data.append(int(line,16))
 	except:
 		pass
 
@@ -49,6 +49,6 @@ for i in range(start,end):
 			d = diff(x,data[i],data[j])
 			if d: print d
 
-			
+
 
 

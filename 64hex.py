@@ -9,7 +9,7 @@ def hexify(i):
 	return hex(i).replace('0x','').replace('L','').zfill(64)
 
 
-for line in fileinput.input():	
+for line in fileinput.input():
 	line = line.replace('\n','').replace('\r','').replace('0x','').replace('L','')
 	l = len(line)
 	if l > 1:

@@ -13,7 +13,7 @@ data = []
 for line in fileinput.input():
 	line = line.replace('\n','')
 	try:
-		data.append(int(line,16))	
+		data.append(int(line,16))
 	except:
 		pass
 
@@ -27,7 +27,7 @@ def xor(a,b):
 		c = ((P-k) %N)
 		if c > 100000000: print hexify(c)
 
-		
+
 
 for i in range(0,len(data)-1):
 	for j in range(0,len(data)-1):

@@ -15,9 +15,9 @@ def hexify(i):
 
 data = []
 for line in fileinput.input():
-	line = line.replace('0x','').replace('L','').replace('\n','')	
+	line = line.replace('0x','').replace('L','').replace('\n','')
 	try:
-		data.append(line)	
+		data.append(line)
 	except:
 		pass
 
@@ -73,6 +73,6 @@ for i in range(start,end):
 		print s.title()
 
 
-			
+
 
 
