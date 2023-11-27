@@ -10,14 +10,10 @@ def pivot(s,tmp,i):
 	if l>1:
 		a = pivot(s[l/2:],tmp,i)[len(tmp)-1]
 		b = pivot(s[:l/2],tmp,i)[len(tmp)-1]
-		if i:
-			r = a+b
-		else:
-			r = b+a
-		tmp.append(r)
+		r = a+b if i else b+a
 	else:
 		r = s
-		tmp.append(r)
+	tmp.append(r)
 	return tmp
 
 

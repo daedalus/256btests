@@ -29,19 +29,12 @@ end = len(data) -1
 mid = int(end / 2)
 
 def prepare(data):
-	data2 = []
-	for k in range(mid,end):
-		data2.append(data[k])
-	for k in range(mid,start,-1):
-		data2.append(data[k])
-
+	data2 = [data[k] for k in range(mid,end)]
+	data2.extend(data[k] for k in range(mid,start,-1))
 	return data2
 
 def invert(data):
-	data2 = []
-	for k in range(start,end):
-		data2.append(data[k])
-	return data2
+	return [data[k] for k in range(start,end)]
 
 #data = prepare(data)
 #data = invert(data)
