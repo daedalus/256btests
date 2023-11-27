@@ -6,10 +6,7 @@ import fileinput
 def rot13(test):
 	p = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
 	r = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM "
-	d = ""
-	for l in test:
-		d +=  r[p.find(l)]
-	return d
+	return "".join(r[p.find(l)] for l in test)
 
 #print rot13(rot13("Dario Clavijo"))
 

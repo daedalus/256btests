@@ -10,11 +10,7 @@ weights = [11915, 11966, 12055, 11920, 11874, 11965, 11908, 11900, 11973, 11876,
 
 count = 3808866.0
 count = 24414.0
-#weights = []
-probs = []
-
-for i in range(0,256):
-	probs.append(0)
+probs = [0 for _ in range(0,256)]
 
 def recalculate_probs(mult):
 	for i in range(0,256):

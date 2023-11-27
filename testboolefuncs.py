@@ -31,7 +31,7 @@ end = len(data) -1
 mid = int(end / 2)
 
 def diff(x,i,j):
-	if (x != i and x != j):
+	if x not in [i, j]:
 		y = (x % N)
 		if (skip < y):
 			return hexify(y)

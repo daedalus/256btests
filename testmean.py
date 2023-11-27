@@ -32,19 +32,12 @@ end = len(data) -1
 mid = int(end / 2)
 
 def prepare(data):
-	data2 = []
-	for k in range(mid,end):
-		data2.append(data[k])
-	for k in range(mid,start,-1):
-		data2.append(data[k])
-
+	data2 = [data[k] for k in range(mid,end)]
+	data2.extend(data[k] for k in range(mid,start,-1))
 	return data2
 
 def invert(data):
-	data2 = []
-	for k in range(start,end):
-		data2.append(data[k])
-	return data2
+	return [data[k] for k in range(start,end)]
 
 #data = prepare(data)
 #data = invert(data)
@@ -52,9 +45,7 @@ def invert(data):
 
 #print np.mean(data)
 def AM(data):
-	accum = 0
-	for i in range(0,len(data)-1):
-		accum += data[i]
+	accum = sum(data[i] for i in range(0,len(data)-1))
 	return accum / len(data)
 
 def GM(data):
@@ -63,9 +54,7 @@ def GM(data):
 		accum *= data[i]
 	return accum ** (1 / len(data))
 def HM(data):
-	accum = 0
-	for i in range(0,len(data)-1):
-		accum += 1/data[i]
+	accum = sum(1/data[i] for i in range(0,len(data)-1))
 	return len(data) * (accum ** -1)
 
 
