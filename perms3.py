@@ -6,10 +6,9 @@ tmp = []
 i = 0
 
 for line in fileinput.input():
-        try:
-                line = line.replace('\n','')
-		for i in itertools.permutations(line):
-			print ''.join(i)
-        except:
-                pass
-
+    try:
+        line = line.replace("\n", "")
+        for i in itertools.permutations(line):
+            print("".join(i))
+    except:
+        pass

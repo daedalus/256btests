@@ -1,6 +1,5 @@
 import itertools
 
-p = itertools.permutations('abcdefghijklmnopqrstuvwxyz0123456789 ')
+p = itertools.permutations("abcdefghijklmnopqrstuvwxyz0123456789 ")
 for i in p:
-	print ''.join(i)
-
+    print("".join(i))
