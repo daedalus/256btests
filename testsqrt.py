@@ -31,7 +31,7 @@ for line in fileinput.input():
     if len(line) > 2:
         try:
             i = int(line, 16)
-            for k in range(0, 16):
+            for _ in range(0, 16):
                 i = int(math.sqrt(i)) % N
                 if i > 10000000:
                     print(hexify(i))

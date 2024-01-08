@@ -21,7 +21,7 @@ for line in fileinput.input():
 
 def xor(a, b):
     k = abs(a ^ b)
-    if (k != a) and (k != b):
+    if k not in [a, b]:
         c = k % N
         if c > 100000000:
             print(hexify(c))

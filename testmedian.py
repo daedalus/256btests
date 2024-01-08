@@ -24,7 +24,7 @@ for line in fileinput.input():
                 j = 0
                 accum = 0
 
-            print(hexify(int(accum / max_j) % N))
+            print(hexify(accum // max_j % N))
 
         except:
             pass

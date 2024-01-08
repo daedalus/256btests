@@ -298,7 +298,7 @@ def gen_samples():
 def gen():
     for j in range(1, 199):
         recalculate_probs(j / 100.0)
-        for k in range(0, 1000):
+        for _ in range(0, 1000):
             i = gen_samples()
             print(hex(i).replace("0x", "").replace("L", "").zfill(64))
 

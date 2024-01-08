@@ -46,25 +46,25 @@ for i in range(start, end):
         s = data[i] + data[j]
         print(s)
         print(s.title())
-        s = data[i] + " " + data[j]
+        s = f"{data[i]} {data[j]}"
         print(s)
         print(s.title())
         s = data[i].lower() + data[j].lower()
         print(s)
         print(s.title())
-        s = data[i].lower() + " " + data[j].lower()
+        s = f"{data[i].lower()} {data[j].lower()}"
         print(s)
         print(s.title())
         s = data[i].upper() + data[j].upper()
-        s = data[i].upper() + " " + data[j].upper()
+        s = f"{data[i].upper()} {data[j].upper()}"
         s = data[i].lower() + data[j].upper()
         print(s)
         print(s.title())
-        s = data[i].lower() + " " + data[j].upper()
+        s = f"{data[i].lower()} {data[j].upper()}"
         print(s.title())
         s = data[i].upper() + data[j].lower()
         print(s)
         print(s.title())
-        s = data[i].upper() + " " + data[j].lower()
+        s = f"{data[i].upper()} {data[j].lower()}"
         print(s)
         print(s.title())
