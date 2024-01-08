@@ -22,21 +22,21 @@ for line in fileinput.input():
 
 def join2(a, b):
 
-    print(a.title() + " " + b)
+    print(f"{a.title()} {b}")
     print(a.title() + b)
-    print(a + " " + b.title())
+    print(f"{a} {b.title()}")
     print(a + b.title())
-    print(a.title() + " " + b.title())
+    print(f"{a.title()} {b.title()}")
     print(a.title() + b.title())
-    print(a.lower() + " " + b.lower())
+    print(f"{a.lower()} {b.lower()}")
     print(a.lower() + b.lower())
-    print(a.upper() + " " + b.upper())
+    print(f"{a.upper()} {b.upper()}")
     print(a.upper() + b.upper())
-    print(a.lower() + " " + b.upper())
+    print(f"{a.lower()} {b.upper()}")
     print(a.lower() + b.upper())
-    print(a.upper() + " " + b.lower())
+    print(f"{a.upper()} {b.lower()}")
     print(a.upper() + b.lower())
-    print(a + " " + b)
+    print(f"{a} {b}")
     print(a + b)
 
 

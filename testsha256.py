@@ -13,10 +13,8 @@ def hexify(s):
 
 
 for line in fileinput.input():
-    i = 0
     line = line.rstrip()
     line = sha256bin(line)
-    while i <= 100:
+    for _ in range(101):
         line = sha256bin(line)
         print(hexify(line))
-        i += 1

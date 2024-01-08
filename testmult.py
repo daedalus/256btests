@@ -49,7 +49,7 @@ for i in range(start, end):
     for j in range(start, end):
         if i != j:
             x = data[i] * data[j]
-            if x != data[i] and x != data[j]:
+            if x not in [data[i], data[j]]:
                 y = x % N
                 if skip < y:
                     print(hexify(y))

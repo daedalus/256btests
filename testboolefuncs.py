@@ -44,14 +44,11 @@ for i in range(start, end):
     for j in range(start, end):
         if i != j:
             x = data[i] and data[j]
-            d = diff(x, data[i], data[j])
-            if d:
+            if d := diff(x, data[i], data[j]):
                 print(d)
             x = data[i] or data[j]
-            d = diff(x, data[i], data[j])
-            if d:
+            if d := diff(x, data[i], data[j]):
                 print(d)
             x = data[i] ^ data[j]
-            d = diff(x, data[i], data[j])
-            if d:
+            if d := diff(x, data[i], data[j]):
                 print(d)
