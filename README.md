@@ -107,6 +107,22 @@ to work indefinitely, but new scripts should use the new names.
 
 `rot13` retains its name (ROT13 is already the standard mathematical name).
 
+The following generators are new and have no legacy alias:
+
+| Generator | Description |
+|-----------|-------------|
+| `mod-div` | Pairwise modular division a·inv(b) mod N; skip non-invertible pairs |
+| `neg` | Additive inverse (−x) mod N for each input |
+| `abs-diff` | Pairwise abs(a−b) mod N without skip threshold |
+| `bit-not` | Bitwise NOT of each 256-bit value (masked to 256 bits, no field reduction) |
+| `bit-and` | Pairwise bitwise AND (256-bit word, no field reduction) |
+| `bit-or` | Pairwise bitwise OR (256-bit word, no field reduction) |
+| `shl` | Left-shift each value by k bits, masked to 256 bits (use `--shift k`) |
+| `shr` | Right-shift each value by k bits (use `--shift k`) |
+| `gcd` | GCD of each pair, output as 64-char hex |
+| `xgcd` | Extended GCD per pair: `g x y` where a·x + b·y = g |
+| `mod-reduce` | Reduce decimal or hex input mod N → 64-char hex |
+
 ---
 
 ### Generator reference
@@ -182,6 +198,63 @@ These read hex-encoded 256-bit values (one per line) from stdin unless noted:
 | `line-echo` | text lines | Echo lines (strip CR/LF) |
 | `rot13` | text lines | ROT13 transform |
 | `bit-stats` | hex lines | Per-bit-position frequency count |
+
+#### New generators
+
+These generators are new additions with no legacy alias:
+
+| Generator | Reads | Description |
+|-----------|-------|-------------|
+| `neg` | hex lines | Additive inverse (−x) mod N; one value per input line |
+| `abs-diff` | hex lines | Pairwise abs(a−b) mod N; no skip threshold |
+| `bit-not` | hex lines | Bitwise NOT (flip all 256 bits); no field reduction |
+| `bit-and` | hex lines | Pairwise bitwise AND; 256-bit word, no field reduction |
+| `bit-or` | hex lines | Pairwise bitwise OR; 256-bit word, no field reduction |
+| `shl` | hex lines | Left-shift each value by `--shift k` bits (default 1) |
+| `shr` | hex lines | Right-shift each value by `--shift k` bits (default 1) |
+| `gcd` | hex lines | GCD of each pair as 64-char hex |
+| `xgcd` | hex lines | Extended GCD per pair: `g x y` on each line |
+| `mod-div` | hex lines | Pairwise a·inv(b) mod N; skip non-invertible pairs |
+| `mod-reduce` | decimal/hex lines | Reduce x mod N → 64-char hex |
+
+**Semantics notes:**
+
+- `bit-not`, `bit-and`, `bit-or`, `shl`, `shr` operate on raw 256-bit words (no
+  modular reduction); output is a 256-bit value zfill-padded to 64 hex chars.
+- `mod-div`: when b has no modular inverse modulo N (i.e. `gcd(b, N) ≠ 1`), the
+  pair is silently skipped and a diagnostic is written to stderr.
+- `xgcd` output uses three space-separated fields per line: the GCD `g` (64-char
+  hex), and the Bézout coefficients `x` and `y` (signed decimal integers) such
+  that `a·x + b·y = g`.
+- `mod-reduce` accepts lines starting with `0x`/`0X` as hex, otherwise tries
+  decimal first and then bare hex.
+
+```bash
+# neg — additive inverse
+echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    | python generators.py neg
+
+# bit-not — flip all 256 bits
+echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+    | python generators.py bit-not
+
+# shl / shr — logical shifts (need at least 1 input line)
+python generators.py seq-counter | head -5 | python generators.py shl --shift 8
+python generators.py seq-counter | head -5 | python generators.py shr --shift 8
+
+# abs-diff, bit-and, bit-or, gcd, xgcd, mod-div — pairwise (need ≥3 lines)
+python generators.py seq-counter | head -5 | python generators.py abs-diff | head -6
+python generators.py seq-counter | head -5 | python generators.py bit-and  | head -6
+python generators.py seq-counter | head -5 | python generators.py bit-or   | head -6
+python generators.py seq-counter | head -5 | python generators.py gcd      | head -6
+python generators.py seq-counter | head -5 | python generators.py xgcd     | head -6
+python generators.py seq-counter | head -5 | python generators.py mod-div  | head -6
+
+# mod-reduce — decimal or hex input
+echo "12345"      | python generators.py mod-reduce
+echo "0xdeadbeef" | python generators.py mod-reduce
+python generators.py seq-counter | head -3 | python generators.py mod-reduce
+```
 
 ```bash
 # Feed hex output from one generator into another

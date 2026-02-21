@@ -914,6 +914,236 @@ def run_testxor2(args):
             xor(data[i], data[j])
 
 
+# ── New generators ────────────────────────────────────────────────────────────
+
+
+def run_mod_div(args):
+    """Read hex lines from stdin; compute pairwise modular division a * inv(b) mod N.
+
+    When b has no modular inverse (gcd(b, N) != 1), the pair is skipped and a
+    note is written to stderr.
+    """
+    data = []
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            data.append(int(line, 16))
+        except Exception:
+            pass
+
+    for i in range(len(data) - 1):
+        for j in range(len(data) - 1):
+            if i != j:
+                a, b = data[i], data[j]
+                if b == 0:
+                    print(f"mod-div: skipping pair ({i},{j}): divisor is zero", file=sys.stderr)
+                    continue
+                if math.gcd(b, N) != 1:
+                    print(f"mod-div: skipping pair ({i},{j}): gcd(b,N)={math.gcd(b,N)} (not invertible)", file=sys.stderr)
+                    continue
+                result = (a * pow(b, -1, N)) % N
+                print(hexify(result))
+
+
+def run_neg(args):
+    """Read hex lines from stdin; output (-x) mod N for each value.
+
+    Semantics: additive inverse in Z/NZ — equivalent to (N - x) mod N.
+    """
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            x = int(line, 16)
+            print(hexify((-x) % N))
+        except Exception:
+            pass
+
+
+def run_abs_diff(args):
+    """Read hex lines from stdin; print pairwise abs(a - b) mod N.
+
+    Similar to mod-sub but without a skip threshold, providing a clean
+    pairwise absolute-difference stream.
+    """
+    data = []
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            data.append(int(line, 16))
+        except Exception:
+            pass
+
+    for i in range(len(data) - 1):
+        for j in range(len(data) - 1):
+            if i != j:
+                print(hexify(abs(data[i] - data[j]) % N))
+
+
+def run_bit_not(args):
+    """Read hex lines from stdin; output bitwise NOT of each 256-bit value.
+
+    Flips all 256 bits; result is a 256-bit word (no field reduction).
+    Output: 64-char lowercase hex.
+    """
+    mask = (1 << 256) - 1
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            x = int(line, 16)
+            print(hexify((~x) & mask))
+        except Exception:
+            pass
+
+
+def run_bit_and(args):
+    """Read hex lines from stdin; print pairwise bitwise AND of 256-bit values.
+
+    Operates on raw 256-bit words (no field reduction).
+    Output: 64-char lowercase hex per pair.
+    """
+    data = []
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            data.append(int(line, 16))
+        except Exception:
+            pass
+
+    for i in range(len(data) - 1):
+        for j in range(len(data) - 1):
+            if i != j:
+                print(hexify(data[i] & data[j]))
+
+
+def run_bit_or(args):
+    """Read hex lines from stdin; print pairwise bitwise OR of 256-bit values.
+
+    Operates on raw 256-bit words (no field reduction).
+    Output: 64-char lowercase hex per pair.
+    """
+    data = []
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            data.append(int(line, 16))
+        except Exception:
+            pass
+
+    for i in range(len(data) - 1):
+        for j in range(len(data) - 1):
+            if i != j:
+                print(hexify(data[i] | data[j]))
+
+
+def run_shl(args):
+    """Read hex lines from stdin; left-shift each 256-bit value by k bits.
+
+    Result is masked to 256 bits (no field reduction).
+    Use --shift k to specify the shift amount (default: 1, range 0-255).
+    """
+    k = args.shift
+    mask = (1 << 256) - 1
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            x = int(line, 16)
+            print(hexify((x << k) & mask))
+        except Exception:
+            pass
+
+
+def run_shr(args):
+    """Read hex lines from stdin; right-shift each 256-bit value by k bits.
+
+    Result is a 256-bit word (no field reduction).
+    Use --shift k to specify the shift amount (default: 1, range 0-255).
+    """
+    k = args.shift
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            x = int(line, 16)
+            print(hexify(x >> k))
+        except Exception:
+            pass
+
+
+def run_gcd(args):
+    """Read hex lines from stdin; print GCD of each pair as 64-char hex.
+
+    Reads all lines, then outputs gcd(data[i], data[j]) for i != j pairs.
+    Output: 64-char lowercase hex per pair.
+    """
+    data = []
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            data.append(int(line, 16))
+        except Exception:
+            pass
+
+    for i in range(len(data) - 1):
+        for j in range(len(data) - 1):
+            if i != j:
+                print(hexify(math.gcd(data[i], data[j])))
+
+
+def run_xgcd(args):
+    """Read hex lines from stdin; print Extended GCD (g, x, y) for each pair.
+
+    For each pair (a, b), computes integers g, x, y such that a*x + b*y = g = gcd(a, b).
+    Output format: three space-separated 64-char hex values per line: g x y
+    Note: x and y can be negative; they are output as signed decimal integers
+    alongside g in hex to preserve full information.
+    """
+
+    def xgcd(a, b):
+        if b == 0:
+            return a, 1, 0
+        g, x1, y1 = xgcd(b, a % b)
+        return g, y1, x1 - (a // b) * y1
+
+    data = []
+    for line in sys.stdin:
+        line = line.replace("0x", "").replace("L", "").replace("\n", "")
+        try:
+            data.append(int(line, 16))
+        except Exception:
+            pass
+
+    for i in range(len(data) - 1):
+        for j in range(len(data) - 1):
+            if i != j:
+                g, x, y = xgcd(data[i], data[j])
+                print(f"{hexify(g)} {x} {y}")
+
+
+def run_mod_reduce(args):
+    """Read lines from stdin; interpret each as decimal or hex integer and output x mod N.
+
+    Accepts:
+      - Lines starting with '0x' or '0X' as hexadecimal
+      - Plain decimal integer strings
+      - Bare hex strings (64 or fewer hex characters without '0x' prefix)
+    Output: 64-char lowercase hex.
+    """
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            if line.startswith("0x") or line.startswith("0X"):
+                x = int(line, 16)
+            else:
+                try:
+                    x = int(line, 10)
+                except ValueError:
+                    x = int(line, 16)
+            print(hexify(x % N))
+        except Exception:
+            pass
+
+
 # ── Registry ──────────────────────────────────────────────────────────────────
 # Maps subcommand name -> (function, short description).
 # Keys are the current (mathematically descriptive) names.
@@ -1090,6 +1320,51 @@ GENERATORS = {
         run_testxor,
         "Read hex lines; XOR each value with 0–255 mod N",
     ),
+    # ── New generators ─────────────────────────────────────────────────────────
+    "mod-div": (
+        run_mod_div,
+        "Read hex lines; pairwise modular division a*inv(b) mod N (skip non-invertible)",
+    ),
+    "neg": (
+        run_neg,
+        "Read hex lines; output (-x) mod N (additive inverse in Z/NZ)",
+    ),
+    "abs-diff": (
+        run_abs_diff,
+        "Read hex lines; pairwise abs(a-b) mod N without skip threshold",
+    ),
+    "bit-not": (
+        run_bit_not,
+        "Read hex lines; bitwise NOT of each 256-bit value (masked to 256 bits)",
+    ),
+    "bit-and": (
+        run_bit_and,
+        "Read hex lines; pairwise bitwise AND (256-bit word, no field reduction)",
+    ),
+    "bit-or": (
+        run_bit_or,
+        "Read hex lines; pairwise bitwise OR (256-bit word, no field reduction)",
+    ),
+    "shl": (
+        run_shl,
+        "Read hex lines; left-shift each value by k bits (--shift k, default 1)",
+    ),
+    "shr": (
+        run_shr,
+        "Read hex lines; right-shift each value by k bits (--shift k, default 1)",
+    ),
+    "gcd": (
+        run_gcd,
+        "Read hex lines; GCD of each pair output as 64-char hex",
+    ),
+    "xgcd": (
+        run_xgcd,
+        "Read hex lines; extended GCD per pair: three fields 'g x y' per line",
+    ),
+    "mod-reduce": (
+        run_mod_reduce,
+        "Read decimal or hex lines; output x mod N as 64-char hex",
+    ),
 }
 
 # ── Deprecated aliases ────────────────────────────────────────────────────────
@@ -1199,8 +1474,20 @@ def _build_parser():
     )
     sp.set_defaults(func=run_freader)
 
+    # shl / shr — accept optional --shift argument
+    for name in ("shl", "shr"):
+        sp = subparsers.add_parser(name, help=GENERATORS[name][1])
+        sp.add_argument(
+            "--shift",
+            type=int,
+            default=1,
+            metavar="k",
+            help="Number of bits to shift (0-255, default: 1)",
+        )
+        sp.set_defaults(func=GENERATORS[name][0])
+
     # All remaining generators — no special arguments
-    _special = {"rand-seeded", "rand-offset", "rand-bytes", "entropy-scan"}
+    _special = {"rand-seeded", "rand-offset", "rand-bytes", "entropy-scan", "shl", "shr"}
     for name, (func, desc) in GENERATORS.items():
         if name not in _special:
             old_aliases = _REVERSE_ALIASES.get(name, [])
