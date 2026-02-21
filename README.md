@@ -18,8 +18,8 @@ Two generators need optional third-party packages:
 
 | Generator | Package | Install |
 |-----------|---------|---------|
-| `intcounter10` | [python-stdnum](https://pypi.org/project/python-stdnum/) | `pip install python-stdnum` |
-| `probagen` | [numpy](https://pypi.org/project/numpy/) | `pip install numpy` |
+| `luhn-counter` | [python-stdnum](https://pypi.org/project/python-stdnum/) | `pip install python-stdnum` |
+| `prob-gen` | [numpy](https://pypi.org/project/numpy/) | `pip install numpy` |
 
 All other generators use only the Python standard library.
 
@@ -43,14 +43,69 @@ pipe:
 
 ```bash
 # Generate 5 sequential 64-char hex values
-python generators.py intcounter14 | head -5
+python generators.py seq-counter | head -5
 
 # Pipe one generator's output into another
-python generators.py intcounter14 | python generators.py testrevert | head -4
+python generators.py seq-counter | python generators.py hex-reverse | head -4
 
 # Generate random 256-bit integers with a seed, take the first 3
-python generators.py randomint myseed | head -3
+python generators.py rand-seeded myseed | head -3
 ```
+
+---
+
+### Generator name mapping (old → new)
+
+Generator names have been updated to be more mathematically descriptive.
+The old names are still accepted as **deprecated aliases** and will continue
+to work indefinitely, but new scripts should use the new names.
+
+| Old name (deprecated alias) | New name | Description |
+|-----------------------------|----------|-------------|
+| `256bitrepr` | `bits-repr` | Last-8-char hex + binary + integer representation |
+| `64hex` | `to-hex64` | Reduce mod N → 64-char hex |
+| `freader` | `entropy-scan` | Scan binary file for high-entropy byte sequences |
+| `intcounter6` | `secp-pow-mod` | P^i mod N and N^i mod N (secp256k1 constants) |
+| `intcounter9` | `weierstrass-sqrt` | floor(sqrt(x³+7)) variants mod N (Weierstrass curve) |
+| `intcounter10` | `luhn-counter` | Integers with Luhn checksum digit appended |
+| `intcounter14` | `seq-counter` | Sequential integers as 64-char hex |
+| `intcounter15` | `cubic-shift` | (x³ << x) mod N as 64-char hex |
+| `perms` | `word-perms` | Unique permutations of stdin words |
+| `perms2` | `alpha-perms` | All permutations of a–z, 0–9 and space |
+| `perms3` | `str-perms` | All permutations of each stdin line |
+| `probagen` | `prob-gen` | Weighted bit-probability model output |
+| `randomint` | `rand-seeded` | Uniform random 256-bit integers (seeded) |
+| `randomint2` | `rand-reseed` | Random 256-bit integers; seed auto-increments every 1,000 values |
+| `randomint3` | `rand-offset` | Random integers starting at 2³² (seeded) |
+| `randomint4` | `rand-bytes` | 256-bit hex strings assembled from random bytes (seeded) |
+| `replacer` | `line-echo` | Echo lines (strip CR/LF) |
+| `simple-stat-analysis` | `bit-stats` | Per-bit-position frequency count |
+| `testSTRToSHA512` | `sha512-hex` | SHA-512 of each line mod N |
+| `testadd` | `mod-add` | Pairwise sums mod N |
+| `testbitpatterns` | `bit-concat` | 256-bit values from concatenated binary strings |
+| `testboolefuncs` | `bitwise-ops` | Pairwise AND / OR / XOR mod N |
+| `testconcatnumbers` | `str-numcat` | Concat with separators and numbers 0–999 |
+| `testinv` | `additive-inv` | N−k, P−k, k XOR 2²⁵⁶, 2²⁵⁶−k variants mod N |
+| `testmean` | `mean-sub` | Arithmetic mean, then ∞ loop subtracting mean from N |
+| `testmedian` | `pair-avg` | Rolling pair-average mod N |
+| `testmodulo3` | `iterated-pow-mod` | ((p % n)^i) % n as 64-char hex |
+| `testmult` | `mod-mul` | Pairwise products mod N |
+| `testpivot` | `str-pivot` | Recursive pivot string transformation |
+| `testpwr` | `pow-range` | Each value raised to powers 96–127 mod N |
+| `testrevert` | `hex-reverse` | Character-reversed strings |
+| `testrot` | `bit-rotate` | Rotate-left / rotate-right bit variants mod N |
+| `testsec256k1` | `secp256k1-ops` | secp256k1 curve candidate operations |
+| `testsha256` | `sha256-chain` | SHA-256 applied 101 times; 64-char hex output |
+| `testsqrt` | `iter-sqrt` | Iterated integer sqrt × 16 mod N |
+| `teststr` | `pair-concat` | Pairwise concatenation combinations |
+| `teststr2` | `str-cases` | title / lower / upper variants per line |
+| `teststr3` | `str-join-cases` | Pairwise join with case variants |
+| `testsub` | `mod-sub` | Pairwise absolute differences mod N |
+| `testsub256` | `mod-neg` | N−k, P−k, 2²⁵⁶−k mod N |
+| `testxor` | `xor-scan` | XOR with 0–255 mod N |
+| `testxor2` | `xor-pairs` | Pairwise XOR variants mod N and P |
+
+`rot13` retains its name (ROT13 is already the standard mathematical name).
 
 ---
 
@@ -60,37 +115,37 @@ python generators.py randomint myseed | head -3
 
 | Generator | Arguments | Description |
 |-----------|-----------|-------------|
-| `randomint` | `seed` | Infinite stream of random 256-bit integers |
-| `randomint3` | `seed` | Infinite stream starting at 2³², random offset per value |
-| `randomint4` | `seed` | Infinite 256-bit hex strings assembled from random bytes |
-| `freader` | `filename start length [flen]` | Scan a binary file for high-entropy byte sequences |
+| `rand-seeded` | `seed` | Infinite stream of random 256-bit integers |
+| `rand-offset` | `seed` | Infinite stream starting at 2³², random offset per value |
+| `rand-bytes` | `seed` | Infinite 256-bit hex strings assembled from random bytes |
+| `entropy-scan` | `filename start length [flen]` | Scan a binary file for high-entropy byte sequences |
 
 ```bash
-python generators.py randomint hello | head -3
-python generators.py randomint3 42   | head -3
-python generators.py randomint4 abc  | head -3
-python generators.py freader /path/to/binary 0 16
+python generators.py rand-seeded hello | head -3
+python generators.py rand-offset 42   | head -3
+python generators.py rand-bytes abc  | head -3
+python generators.py entropy-scan /path/to/binary 0 16
 ```
 
 #### Infinite generators (no stdin required)
 
 | Generator | Description |
 |-----------|-------------|
-| `intcounter6` | Prints `(P^i % N)` and `(N^i % N)` for i = 0, 1, 2, … |
-| `intcounter9` | Prints `floor(sqrt(x³+7))` variants mod N |
-| `intcounter10` | Integers with their Luhn checksum digit appended |
-| `intcounter14` | Sequential integers as 64-char hex |
-| `intcounter15` | `(x³ << x) % N` as 64-char hex |
-| `perms2` | All permutations of a–z, 0–9 and space (astronomical count) |
-| `randomint2` | Random 256-bit integers; seed auto-increments every 1 000 values |
-| `testbitpatterns` | 256-bit values from concatenated binary strings |
-| `testmodulo3` | `((p % n)^i) % n` as 64-char hex |
-| `probagen` | Weighted bit-probability model output (numpy required) |
+| `secp-pow-mod` | Prints `(P^i % N)` and `(N^i % N)` for i = 0, 1, 2, … |
+| `weierstrass-sqrt` | Prints `floor(sqrt(x³+7))` variants mod N |
+| `luhn-counter` | Integers with their Luhn checksum digit appended |
+| `seq-counter` | Sequential integers as 64-char hex |
+| `cubic-shift` | `(x³ << x) % N` as 64-char hex |
+| `alpha-perms` | All permutations of a–z, 0–9 and space (astronomical count) |
+| `rand-reseed` | Random 256-bit integers; seed auto-increments every 1,000 values |
+| `bit-concat` | 256-bit values from concatenated binary strings |
+| `iterated-pow-mod` | `((p % n)^i) % n` as 64-char hex |
+| `prob-gen` | Weighted bit-probability model output (numpy required) |
 
 ```bash
-python generators.py intcounter14   | head -5
-python generators.py testbitpatterns | head -4
-python generators.py randomint2     | head -3
+python generators.py seq-counter   | head -5
+python generators.py bit-concat | head -4
+python generators.py rand-reseed     | head -3
 ```
 
 #### Stdin-driven generators
@@ -99,45 +154,45 @@ These read hex-encoded 256-bit values (one per line) from stdin unless noted:
 
 | Generator | Reads | Description |
 |-----------|-------|-------------|
-| `256bitrepr` | hex lines | Last 8 hex chars + binary + int |
-| `64hex` | hex lines | Reduce mod N → 64-char hex |
-| `testadd` | hex lines | Pairwise sums mod N |
-| `testboolefuncs` | hex lines | Pairwise AND / OR / XOR mod N |
-| `testinv` | hex lines | N−k, P−k, k XOR 2²⁵⁶, 2²⁵⁶−k variants mod N |
-| `testmean` | hex lines | Arithmetic mean, then ∞ loop subtracting mean from N |
-| `testmedian` | hex lines | Rolling pair-average mod N |
-| `testmult` | hex lines | Pairwise products mod N |
-| `testpwr` | hex lines | Each value raised to powers 96–127 mod N |
-| `testrevert` | hex lines | Character-reversed strings |
-| `testrot` | hex lines | Rotate-left / rotate-right bit variants mod N |
-| `testsec256k1` | hex lines | secp256k1 curve candidate operations |
-| `testsqrt` | hex lines | Iterated integer sqrt × 16 mod N |
-| `testsub` | hex lines | Pairwise absolute differences mod N |
-| `testsub256` | hex lines | N−k, P−k, 2²⁵⁶−k mod N |
-| `testxor` | hex lines | XOR with 0–255 mod N |
-| `testxor2` | hex lines | Pairwise XOR variants mod N and P |
-| `testSTRToSHA512` | text lines | SHA-512 of each line mod N |
-| `testsha256` | text lines | SHA-256 applied 101 times; 64-char hex output |
-| `teststr` | text lines | Pairwise concatenation combinations |
-| `teststr2` | text lines | title / lower / upper variants per line |
-| `teststr3` | text lines | Pairwise join with case variants |
-| `testconcatnumbers` | text lines | Concat with separators and numbers 0–999 |
-| `perms` | text lines | Unique permutations (lower / original / upper) |
-| `perms3` | text lines | All permutations of each line |
-| `replacer` | text lines | Echo lines (strip CR/LF) |
+| `bits-repr` | hex lines | Last 8 hex chars + binary + int |
+| `to-hex64` | hex lines | Reduce mod N → 64-char hex |
+| `mod-add` | hex lines | Pairwise sums mod N |
+| `bitwise-ops` | hex lines | Pairwise AND / OR / XOR mod N |
+| `additive-inv` | hex lines | N−k, P−k, k XOR 2²⁵⁶, 2²⁵⁶−k variants mod N |
+| `mean-sub` | hex lines | Arithmetic mean, then ∞ loop subtracting mean from N |
+| `pair-avg` | hex lines | Rolling pair-average mod N |
+| `mod-mul` | hex lines | Pairwise products mod N |
+| `pow-range` | hex lines | Each value raised to powers 96–127 mod N |
+| `hex-reverse` | hex lines | Character-reversed strings |
+| `bit-rotate` | hex lines | Rotate-left / rotate-right bit variants mod N |
+| `secp256k1-ops` | hex lines | secp256k1 curve candidate operations |
+| `iter-sqrt` | hex lines | Iterated integer sqrt × 16 mod N |
+| `mod-sub` | hex lines | Pairwise absolute differences mod N |
+| `mod-neg` | hex lines | N−k, P−k, 2²⁵⁶−k mod N |
+| `xor-scan` | hex lines | XOR with 0–255 mod N |
+| `xor-pairs` | hex lines | Pairwise XOR variants mod N and P |
+| `sha512-hex` | text lines | SHA-512 of each line mod N |
+| `sha256-chain` | text lines | SHA-256 applied 101 times; 64-char hex output |
+| `pair-concat` | text lines | Pairwise concatenation combinations |
+| `str-cases` | text lines | title / lower / upper variants per line |
+| `str-join-cases` | text lines | Pairwise join with case variants |
+| `str-numcat` | text lines | Concat with separators and numbers 0–999 |
+| `word-perms` | text lines | Unique permutations (lower / original / upper) |
+| `str-perms` | text lines | All permutations of each line |
+| `line-echo` | text lines | Echo lines (strip CR/LF) |
 | `rot13` | text lines | ROT13 transform |
-| `simple-stat-analysis` | hex lines | Per-bit-position frequency count |
+| `bit-stats` | hex lines | Per-bit-position frequency count |
 
 ```bash
 # Feed hex output from one generator into another
-python generators.py intcounter14 | python generators.py testxor  | head -10
-python generators.py intcounter14 | python generators.py testsub256 | head -6
-python generators.py randomint seed1 | python generators.py testrot | head -8
+python generators.py seq-counter | python generators.py xor-scan  | head -10
+python generators.py seq-counter | python generators.py mod-neg | head -6
+python generators.py rand-seeded seed1 | python generators.py bit-rotate | head -8
 
 # Text-based generators
 echo "hello" | python generators.py rot13
-printf "alice\nbob\n" | python generators.py teststr2
-printf "alice\nbob\n" | python generators.py testconcatnumbers | head -20
+printf "alice\nbob\n" | python generators.py str-cases
+printf "alice\nbob\n" | python generators.py str-numcat | head -20
 ```
 
 ---
@@ -149,16 +204,16 @@ compose naturally with standard Unix tools:
 
 ```bash
 # Generate and inspect
-python generators.py intcounter14 | head -20
+python generators.py seq-counter | head -20
 
 # Chain generators
-python generators.py randomint seed42 | python generators.py testrevert | head -5
+python generators.py rand-seeded seed42 | python generators.py hex-reverse | head -5
 
 # Statistical analysis of generated output
-python generators.py randomint seed1 | head -1000 | python generators.py simple-stat-analysis
+python generators.py rand-seeded seed1 | head -1000 | python generators.py bit-stats
 
 # Save output to a file
-python generators.py intcounter14 | head -100 > data.txt
+python generators.py seq-counter | head -100 > data.txt
 ```
 
 ---
@@ -199,30 +254,34 @@ Run a quick check across several generators:
 
 ```bash
 # Finite / quick generators
-python generators.py intcounter14          | head -3
-python generators.py testmodulo3           | head -3
-python generators.py intcounter15          | head -3
-python generators.py randomint testseed    | head -3
-python generators.py randomint2            | head -3
-python generators.py randomint3 testseed   | head -3
-python generators.py randomint4 testseed   | head -3
+python generators.py seq-counter          | head -3
+python generators.py iterated-pow-mod     | head -3
+python generators.py cubic-shift          | head -3
+python generators.py rand-seeded testseed | head -3
+python generators.py rand-reseed          | head -3
+python generators.py rand-offset testseed | head -3
+python generators.py rand-bytes testseed  | head -3
+
+# Old names (deprecated aliases) still work
+python generators.py intcounter14         | head -3
+python generators.py randomint testseed   | head -3
 
 # Stdin-driven (provide a couple of hex lines)
 printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py 256bitrepr
+    | python generators.py bits-repr
 printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py 64hex
+    | python generators.py to-hex64
 printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py testinv
+    | python generators.py additive-inv
 printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py testsub256
+    | python generators.py mod-neg
 printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py testxor | head -5
+    | python generators.py xor-scan | head -5
 
 # Text generators
 echo "hello" | python generators.py rot13
-echo "hello" | python generators.py testsha256 | head -3
-echo "hello" | python generators.py testSTRToSHA512
+echo "hello" | python generators.py sha256-chain | head -3
+echo "hello" | python generators.py sha512-hex
 
 # List
 python generators.py --list

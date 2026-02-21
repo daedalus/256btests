@@ -8,8 +8,11 @@ Usage:
     python generators.py <generator> --help
 
 Stdin-driven generators read from standard input; pipe data in:
-    python generators.py intcounter14 | head -5
-    echo "deadbeef" | python generators.py 256bitrepr
+    python generators.py seq-counter | head -5
+    echo "deadbeef" | python generators.py bits-repr
+
+Old names (e.g. intcounter14, randomint, testxor) are accepted as deprecated
+aliases and continue to work unchanged.
 """
 
 import argparse
@@ -912,184 +915,239 @@ def run_testxor2(args):
 
 
 # ── Registry ──────────────────────────────────────────────────────────────────
-# Maps subcommand name -> (function, short description)
+# Maps subcommand name -> (function, short description).
+# Keys are the current (mathematically descriptive) names.
 GENERATORS = {
-    "256bitrepr": (
-        run_256bitrepr,
-        "Show last-8-char hex, binary repr, and integer for each stdin line",
+    "additive-inv": (
+        run_testinv,
+        "Read hex lines; N-k, P-k, k XOR 2^256, 2^256-k mod N",
     ),
-    "64hex": (
-        run_64hex,
-        "Reduce hex stdin lines mod N; output 64-char hex",
-    ),
-    "freader": (
-        run_freader,
-        "Scan a binary file for high-entropy byte sequences",
-    ),
-    "intcounter6": (
-        run_intcounter6,
-        "Infinite: P^i mod N and N^i mod N (secp256k1 constants)",
-    ),
-    "intcounter9": (
-        run_intcounter9,
-        "Infinite: floor(sqrt(x^3+7)) variants mod N",
-    ),
-    "intcounter10": (
-        run_intcounter10,
-        "Infinite: integers with Luhn checksum digit (requires python-stdnum)",
-    ),
-    "intcounter14": (
-        run_intcounter14,
-        "Infinite: sequential integers as 64-char hex",
-    ),
-    "intcounter15": (
-        run_intcounter15,
-        "Infinite: (x^3 << x) mod N as 64-char hex",
-    ),
-    "perms": (
-        run_perms,
-        "Read stdin lines; print unique permutations (lower/original/upper)",
-    ),
-    "perms2": (
+    "alpha-perms": (
         run_perms2,
         "Print all permutations of a–z, 0–9 and space (very long)",
     ),
-    "perms3": (
-        run_perms3,
-        "Read stdin lines; print all permutations of each line",
+    "bit-concat": (
+        run_testbitpatterns,
+        "Infinite: 256-bit hex values from concatenated bit strings",
     ),
-    "probagen": (
+    "bit-rotate": (
+        run_testrot,
+        "Read hex lines; rotate-left/right bit variants mod N",
+    ),
+    "bit-stats": (
+        run_simple_stat_analysis,
+        "Count per-bit-position frequency across 256-bit hex lines from stdin",
+    ),
+    "bits-repr": (
+        run_256bitrepr,
+        "Show last-8-char hex, binary repr, and integer for each stdin line",
+    ),
+    "bitwise-ops": (
+        run_testboolefuncs,
+        "Read hex lines; AND/OR/XOR pairwise combinations mod N",
+    ),
+    "cubic-shift": (
+        run_intcounter15,
+        "Infinite: (x^3 << x) mod N as 64-char hex",
+    ),
+    "entropy-scan": (
+        run_freader,
+        "Scan a binary file for high-entropy byte sequences",
+    ),
+    "hex-reverse": (
+        run_testrevert,
+        "Read hex lines; print each line character-reversed",
+    ),
+    "iter-sqrt": (
+        run_testsqrt,
+        "Read hex lines; iterated integer sqrt 16 times mod N",
+    ),
+    "iterated-pow-mod": (
+        run_testmodulo3,
+        "Infinite: ((p mod n)^i) mod n as 64-char hex",
+    ),
+    "line-echo": (
+        run_replacer,
+        "Echo each stdin line, stripping CR/LF",
+    ),
+    "luhn-counter": (
+        run_intcounter10,
+        "Infinite: integers with Luhn checksum digit (requires python-stdnum)",
+    ),
+    "mean-sub": (
+        run_testmean,
+        "Read hex lines; infinite loop subtracting arithmetic mean from N",
+    ),
+    "mod-add": (
+        run_testadd,
+        "Read hex lines; print pairwise sums mod N above threshold",
+    ),
+    "mod-mul": (
+        run_testmult,
+        "Read hex lines; pairwise products mod N",
+    ),
+    "mod-neg": (
+        run_testsub256,
+        "Read hex lines; N-k, P-k, and 2^256-k mod N for each value",
+    ),
+    "mod-sub": (
+        run_testsub,
+        "Read hex lines; pairwise absolute differences mod N above threshold",
+    ),
+    "pair-avg": (
+        run_testmedian,
+        "Read hex lines; rolling pair-average mod N",
+    ),
+    "pair-concat": (
+        run_teststr,
+        "Read hex lines; pairwise string concatenation combinations",
+    ),
+    "pow-range": (
+        run_testpwr,
+        "Read hex lines; raise each to powers 96–127 mod N",
+    ),
+    "prob-gen": (
         run_probagen,
         "Generate 256-bit hex via weighted bit-probability model (requires numpy)",
     ),
-    "randomint": (
-        run_randomint,
-        "Infinite: random 256-bit integers (requires seed argument)",
-    ),
-    "randomint2": (
-        run_randomint2,
-        "Infinite: random 256-bit integers; seed increments every 1000 values",
-    ),
-    "randomint3": (
-        run_randomint3,
-        "Infinite: random integers from 2^32+, seeded (requires seed argument)",
-    ),
-    "randomint4": (
+    "rand-bytes": (
         run_randomint4,
         "Infinite: 256-bit hex strings from random bytes (requires seed argument)",
     ),
-    "replacer": (
-        run_replacer,
-        "Echo each stdin line, stripping CR/LF",
+    "rand-offset": (
+        run_randomint3,
+        "Infinite: random integers from 2^32+, seeded (requires seed argument)",
+    ),
+    "rand-reseed": (
+        run_randomint2,
+        "Infinite: random 256-bit integers; seed increments every 1000 values",
+    ),
+    "rand-seeded": (
+        run_randomint,
+        "Infinite: random 256-bit integers (requires seed argument)",
     ),
     "rot13": (
         run_rot13,
         "Apply ROT13 to each stdin line",
     ),
-    "simple-stat-analysis": (
-        run_simple_stat_analysis,
-        "Count per-bit-position frequency across 256-bit hex lines from stdin",
+    "secp-pow-mod": (
+        run_intcounter6,
+        "Infinite: P^i mod N and N^i mod N (secp256k1 constants)",
     ),
-    "testSTRToSHA512": (
-        run_testSTRToSHA512,
-        "SHA-512 each stdin line, reduce mod N, output as 64-char hex",
-    ),
-    "testadd": (
-        run_testadd,
-        "Read hex lines; print pairwise sums mod N above threshold",
-    ),
-    "testbitpatterns": (
-        run_testbitpatterns,
-        "Infinite: 256-bit hex values from concatenated bit strings",
-    ),
-    "testboolefuncs": (
-        run_testboolefuncs,
-        "Read hex lines; AND/OR/XOR pairwise combinations mod N",
-    ),
-    "testconcatnumbers": (
-        run_testconcatnumbers,
-        "Read stdin lines; concatenate each with numbers 0..999",
-    ),
-    "testinv": (
-        run_testinv,
-        "Read hex lines; N-k, P-k, k XOR 2^256, 2^256-k mod N",
-    ),
-    "testmean": (
-        run_testmean,
-        "Read hex lines; infinite loop subtracting arithmetic mean from N",
-    ),
-    "testmedian": (
-        run_testmedian,
-        "Read hex lines; rolling pair-average mod N",
-    ),
-    "testmodulo3": (
-        run_testmodulo3,
-        "Infinite: ((p mod n)^i) mod n as 64-char hex",
-    ),
-    "testmult": (
-        run_testmult,
-        "Read hex lines; pairwise products mod N",
-    ),
-    "testpivot": (
-        run_testpivot,
-        "Read stdin lines; recursive pivot string transformation",
-    ),
-    "testpwr": (
-        run_testpwr,
-        "Read hex lines; raise each to powers 96–127 mod N",
-    ),
-    "testrevert": (
-        run_testrevert,
-        "Read hex lines; print each line character-reversed",
-    ),
-    "testrot": (
-        run_testrot,
-        "Read hex lines; rotate-left/right bit variants mod N",
-    ),
-    "testsec256k1": (
+    "secp256k1-ops": (
         run_testsec256k1,
         "Read hex lines; secp256k1 curve candidate operations",
     ),
-    "testsha256": (
+    "seq-counter": (
+        run_intcounter14,
+        "Infinite: sequential integers as 64-char hex",
+    ),
+    "sha256-chain": (
         run_testsha256,
         "Read stdin lines; SHA-256 applied recursively 101 times",
     ),
-    "testsqrt": (
-        run_testsqrt,
-        "Read hex lines; iterated integer sqrt 16 times mod N",
+    "sha512-hex": (
+        run_testSTRToSHA512,
+        "SHA-512 each stdin line, reduce mod N, output as 64-char hex",
     ),
-    "teststr": (
-        run_teststr,
-        "Read hex lines; pairwise string concatenation combinations",
-    ),
-    "teststr2": (
+    "str-cases": (
         run_teststr2,
         "Read stdin lines; print title/lower/upper case variants",
     ),
-    "teststr3": (
+    "str-join-cases": (
         run_teststr3,
         "Read all stdin lines; pairwise join combinations with case variants",
     ),
-    "testsub": (
-        run_testsub,
-        "Read hex lines; pairwise absolute differences mod N above threshold",
+    "str-numcat": (
+        run_testconcatnumbers,
+        "Read stdin lines; concatenate each with numbers 0..999",
     ),
-    "testsub256": (
-        run_testsub256,
-        "Read hex lines; N-k, P-k, and 2^256-k mod N for each value",
+    "str-perms": (
+        run_perms3,
+        "Read stdin lines; print all permutations of each line",
     ),
-    "testxor": (
-        run_testxor,
-        "Read hex lines; XOR each value with 0–255 mod N",
+    "str-pivot": (
+        run_testpivot,
+        "Read stdin lines; recursive pivot string transformation",
     ),
-    "testxor2": (
+    "to-hex64": (
+        run_64hex,
+        "Reduce hex stdin lines mod N; output 64-char hex",
+    ),
+    "weierstrass-sqrt": (
+        run_intcounter9,
+        "Infinite: floor(sqrt(x^3+7)) variants mod N",
+    ),
+    "word-perms": (
+        run_perms,
+        "Read stdin lines; print unique permutations (lower/original/upper)",
+    ),
+    "xor-pairs": (
         run_testxor2,
         "Read hex lines; pairwise XOR variants mod N and P",
     ),
+    "xor-scan": (
+        run_testxor,
+        "Read hex lines; XOR each value with 0–255 mod N",
+    ),
+}
+
+# ── Deprecated aliases ────────────────────────────────────────────────────────
+# Maps old name -> new (canonical) name.
+# Both old and new names are accepted by the CLI; old names print a deprecation
+# notice and will be removed in a future release.
+ALIASES = {
+    "256bitrepr":          "bits-repr",
+    "64hex":               "to-hex64",
+    "freader":             "entropy-scan",
+    "intcounter6":         "secp-pow-mod",
+    "intcounter9":         "weierstrass-sqrt",
+    "intcounter10":        "luhn-counter",
+    "intcounter14":        "seq-counter",
+    "intcounter15":        "cubic-shift",
+    "perms":               "word-perms",
+    "perms2":              "alpha-perms",
+    "perms3":              "str-perms",
+    "probagen":            "prob-gen",
+    "randomint":           "rand-seeded",
+    "randomint2":          "rand-reseed",
+    "randomint3":          "rand-offset",
+    "randomint4":          "rand-bytes",
+    "replacer":            "line-echo",
+    "simple-stat-analysis":  "bit-stats",
+    "testSTRToSHA512":     "sha512-hex",
+    "testadd":             "mod-add",
+    "testbitpatterns":     "bit-concat",
+    "testboolefuncs":      "bitwise-ops",
+    "testconcatnumbers":   "str-numcat",
+    "testinv":             "additive-inv",
+    "testmean":            "mean-sub",
+    "testmedian":          "pair-avg",
+    "testmodulo3":         "iterated-pow-mod",
+    "testmult":            "mod-mul",
+    "testpivot":           "str-pivot",
+    "testpwr":             "pow-range",
+    "testrevert":          "hex-reverse",
+    "testrot":             "bit-rotate",
+    "testsec256k1":        "secp256k1-ops",
+    "testsha256":          "sha256-chain",
+    "testsqrt":            "iter-sqrt",
+    "teststr":             "pair-concat",
+    "teststr2":            "str-cases",
+    "teststr3":            "str-join-cases",
+    "testsub":             "mod-sub",
+    "testsub256":          "mod-neg",
+    "testxor":             "xor-scan",
+    "testxor2":            "xor-pairs",
 }
 
 
 # ── CLI setup ─────────────────────────────────────────────────────────────────
+
+# Reverse alias map: new_name -> [old_names...]
+_REVERSE_ALIASES: dict = {}
+for _old, _new in ALIASES.items():
+    _REVERSE_ALIASES.setdefault(_new, []).append(_old)
 
 
 def _build_parser():
@@ -1101,10 +1159,10 @@ def _build_parser():
             "Run 'generators.py <generator> --help' for generator-specific options.\n"
             "Use --list to see all available generators.\n\n"
             "Examples:\n"
-            "  python generators.py intcounter14 | head -5\n"
-            "  python generators.py randomint myseed | head -3\n"
+            "  python generators.py seq-counter | head -5\n"
+            "  python generators.py rand-seeded myseed | head -3\n"
             "  echo 'hello' | python generators.py rot13\n"
-            "  printf 'deadbeef\\n' | python generators.py 256bitrepr\n"
+            "  printf 'deadbeef\\n' | python generators.py bits-repr\n"
         ),
     )
     parser.add_argument(
@@ -1117,13 +1175,18 @@ def _build_parser():
     subparsers = parser.add_subparsers(dest="generator", metavar="generator")
 
     # Generators that require a positional 'seed' argument
-    for name in ("randomint", "randomint3", "randomint4"):
-        sp = subparsers.add_parser(name, help=GENERATORS[name][1])
+    for name in ("rand-seeded", "rand-offset", "rand-bytes"):
+        old_aliases = _REVERSE_ALIASES.get(name, [])
+        sp = subparsers.add_parser(name, aliases=old_aliases, help=GENERATORS[name][1])
         sp.add_argument("seed", help="Random seed value")
         sp.set_defaults(func=GENERATORS[name][0])
 
-    # freader — positional file/offset/length args
-    sp = subparsers.add_parser("freader", help=GENERATORS["freader"][1])
+    # entropy-scan — positional file/offset/length args
+    sp = subparsers.add_parser(
+        "entropy-scan",
+        aliases=_REVERSE_ALIASES.get("entropy-scan", []),
+        help=GENERATORS["entropy-scan"][1],
+    )
     sp.add_argument("filename", help="Path to the binary file to scan")
     sp.add_argument("start", type=int, help="Start byte offset in the file")
     sp.add_argument("length", type=int, help="Length of each byte sequence to examine")
@@ -1137,9 +1200,11 @@ def _build_parser():
     sp.set_defaults(func=run_freader)
 
     # All remaining generators — no special arguments
+    _special = {"rand-seeded", "rand-offset", "rand-bytes", "entropy-scan"}
     for name, (func, desc) in GENERATORS.items():
-        if name not in ("randomint", "randomint3", "randomint4", "freader"):
-            sp = subparsers.add_parser(name, help=desc)
+        if name not in _special:
+            old_aliases = _REVERSE_ALIASES.get(name, [])
+            sp = subparsers.add_parser(name, aliases=old_aliases, help=desc)
             sp.set_defaults(func=func)
 
     return parser
@@ -1152,7 +1217,11 @@ def main():
     if args.list:
         print("Available generators:\n")
         for name, (_, desc) in sorted(GENERATORS.items()):
-            print(f"  {name:<30} {desc}")
+            old_names = sorted(_REVERSE_ALIASES.get(name, []))
+            alias_str = (
+                f"  [deprecated aliases: {', '.join(old_names)}]" if old_names else ""
+            )
+            print(f"  {name:<30} {desc}{alias_str}")
         return
 
     if not hasattr(args, "func"):
