@@ -61,7 +61,7 @@ The old names are still accepted as **deprecated aliases** and will continue
 to work indefinitely, but new scripts should use the new names.
 
 | Name | Description |
-|-----------------------------|----------|-------------|
+|-----------------------------|-----------------------------|
 | `bits-repr` | Last-8-char hex + binary + integer representation |
 | `to-hex64` | Reduce mod N → 64-char hex |
 | `entropy-scan` | Scan binary file for high-entropy byte sequences |
