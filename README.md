@@ -60,50 +60,50 @@ Generator names have been updated to be more mathematically descriptive.
 The old names are still accepted as **deprecated aliases** and will continue
 to work indefinitely, but new scripts should use the new names.
 
-| Old name (deprecated alias) | New name | Description |
+| Name | Description |
 |-----------------------------|----------|-------------|
-| `256bitrepr` | `bits-repr` | Last-8-char hex + binary + integer representation |
-| `64hex` | `to-hex64` | Reduce mod N → 64-char hex |
-| `freader` | `entropy-scan` | Scan binary file for high-entropy byte sequences |
-| `intcounter6` | `secp-pow-mod` | P^i mod N and N^i mod N (secp256k1 constants) |
-| `intcounter9` | `weierstrass-sqrt` | floor(sqrt(x³+7)) variants mod N (Weierstrass curve) |
-| `intcounter10` | `luhn-counter` | Integers with Luhn checksum digit appended |
-| `intcounter14` | `seq-counter` | Sequential integers as 64-char hex |
-| `intcounter15` | `cubic-shift` | (x³ << x) mod N as 64-char hex |
-| `perms` | `word-perms` | Unique permutations of stdin words |
-| `perms2` | `alpha-perms` | All permutations of a–z, 0–9 and space |
-| `perms3` | `str-perms` | All permutations of each stdin line |
-| `probagen` | `prob-gen` | Weighted bit-probability model output |
-| `randomint` | `rand-seeded` | Uniform random 256-bit integers (seeded) |
-| `randomint2` | `rand-reseed` | Random 256-bit integers; seed auto-increments every 1,000 values |
-| `randomint3` | `rand-offset` | Random integers starting at 2³² (seeded) |
-| `randomint4` | `rand-bytes` | 256-bit hex strings assembled from random bytes (seeded) |
-| `replacer` | `line-echo` | Echo lines (strip CR/LF) |
-| `simple-stat-analysis` | `bit-stats` | Per-bit-position frequency count |
-| `testSTRToSHA512` | `sha512-hex` | SHA-512 of each line mod N |
-| `testadd` | `mod-add` | Pairwise sums mod N |
-| `testbitpatterns` | `bit-concat` | 256-bit values from concatenated binary strings |
-| `testboolefuncs` | `bitwise-ops` | Pairwise AND / OR / XOR mod N |
-| `testconcatnumbers` | `str-numcat` | Concat with separators and numbers 0–999 |
-| `testinv` | `additive-inv` | N−k, P−k, k XOR 2²⁵⁶, 2²⁵⁶−k variants mod N |
-| `testmean` | `mean-sub` | Arithmetic mean, then ∞ loop subtracting mean from N |
-| `testmedian` | `pair-avg` | Rolling pair-average mod N |
-| `testmodulo3` | `iterated-pow-mod` | ((p % n)^i) % n as 64-char hex |
-| `testmult` | `mod-mul` | Pairwise products mod N |
-| `testpivot` | `str-pivot` | Recursive pivot string transformation |
-| `testpwr` | `pow-range` | Each value raised to powers 96–127 mod N |
-| `testrevert` | `hex-reverse` | Character-reversed strings |
-| `testrot` | `bit-rotate` | Rotate-left / rotate-right bit variants mod N |
-| `testsec256k1` | `secp256k1-ops` | secp256k1 curve candidate operations |
-| `testsha256` | `sha256-chain` | SHA-256 applied 101 times; 64-char hex output |
-| `testsqrt` | `iter-sqrt` | Iterated integer sqrt × 16 mod N |
-| `teststr` | `pair-concat` | Pairwise concatenation combinations |
-| `teststr2` | `str-cases` | title / lower / upper variants per line |
-| `teststr3` | `str-join-cases` | Pairwise join with case variants |
-| `testsub` | `mod-sub` | Pairwise absolute differences mod N |
-| `testsub256` | `mod-neg` | N−k, P−k, 2²⁵⁶−k mod N |
-| `testxor` | `xor-scan` | XOR with 0–255 mod N |
-| `testxor2` | `xor-pairs` | Pairwise XOR variants mod N and P |
+| `bits-repr` | Last-8-char hex + binary + integer representation |
+| `to-hex64` | Reduce mod N → 64-char hex |
+| `entropy-scan` | Scan binary file for high-entropy byte sequences |
+| `secp-pow-mod` | P^i mod N and N^i mod N (secp256k1 constants) |
+| `weierstrass-sqrt` | floor(sqrt(x³+7)) variants mod N (Weierstrass curve) |
+| `luhn-counter` | Integers with Luhn checksum digit appended |
+| `seq-counter` | Sequential integers as 64-char hex |
+| `cubic-shift` | (x³ << x) mod N as 64-char hex |
+| `word-perms` | Unique permutations of stdin words |
+| `alpha-perms` | All permutations of a–z, 0–9 and space |
+| `str-perms` | All permutations of each stdin line |
+| `prob-gen` | Weighted bit-probability model output |
+| `rand-seeded` | Uniform random 256-bit integers (seeded) |
+| `rand-reseed` | Random 256-bit integers; seed auto-increments every 1,000 values |
+| `rand-offset` | Random integers starting at 2³² (seeded) |
+| `rand-bytes` | 256-bit hex strings assembled from random bytes (seeded) |
+| `line-echo` | Echo lines (strip CR/LF) |
+| `bit-stats` | Per-bit-position frequency count |
+| `sha512-hex` | SHA-512 of each line mod N |
+| `mod-add` | Pairwise sums mod N |
+| `bit-concat` | 256-bit values from concatenated binary strings |
+| `bitwise-ops` | Pairwise AND / OR / XOR mod N |
+| `str-numcat` | Concat with separators and numbers 0–999 |
+| `additive-inv` | N−k, P−k, k XOR 2²⁵⁶, 2²⁵⁶−k variants mod N |
+| `mean-sub` | Arithmetic mean, then ∞ loop subtracting mean from N |
+| `pair-avg` | Rolling pair-average mod N |
+| `iterated-pow-mod` | ((p % n)^i) % n as 64-char hex |
+| `mod-mul` | Pairwise products mod N |
+| `str-pivot` | Recursive pivot string transformation |
+| `pow-range` | Each value raised to powers 96–127 mod N |
+| `hex-reverse` | Character-reversed strings |
+| `bit-rotate` | Rotate-left / rotate-right bit variants mod N |
+| `secp256k1-ops` | secp256k1 curve candidate operations |
+| `sha256-chain` | SHA-256 applied 101 times; 64-char hex output |
+| `iter-sqrt` | Iterated integer sqrt × 16 mod N |
+| `pair-concat` | Pairwise concatenation combinations |
+| `str-cases` | title / lower / upper variants per line |
+| `str-join-cases` | Pairwise join with case variants |
+| `mod-sub` | Pairwise absolute differences mod N |
+| `mod-neg` | N−k, P−k, 2²⁵⁶−k mod N |
+| `xor-scan` | XOR with 0–255 mod N |
+| `xor-pairs` | Pairwise XOR variants mod N and P |
 
 `rot13` retains its name (ROT13 is already the standard mathematical name).
 
