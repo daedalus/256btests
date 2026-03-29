@@ -1,58 +1,54 @@
 # 256btests
 
-A collection of 256-bit integer generators and test scripts, now unified under a
-single CLI tool: **`generators.py`**.
+> A collection of 256-bit integer generators and test scripts, unified under a single CLI tool.
 
----
+[![PyPI](https://img.shields.io/pypi/v/b256tests.svg)](https://pypi.org/project/b256tests/)
+[![Python](https://img.shields.io/pypi/pyversions/b256tests.svg)](https://pypi.org/project/b256tests/)
+[![Coverage](https://codecov.io/gh/daedalus/256btests/branch/main/graph/badge.svg)](https://codecov.io/gh/daedalus/256btests)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-## Unified CLI — `generators.py`
-
-`generators.py` is a self-contained Python 3 script that consolidates every
-generator and test script in this repository into a single argparse-based CLI.
-The old individual scripts remain in the repository unchanged.
-
-### Requirements
-
-Python 3.8+.  
-Two generators need optional third-party packages:
-
-| Generator | Package | Install |
-|-----------|---------|---------|
-| `luhn-counter` | [python-stdnum](https://pypi.org/project/python-stdnum/) | `pip install python-stdnum` |
-| `prob-gen` | [numpy](https://pypi.org/project/numpy/) | `pip install numpy` |
-
-All other generators use only the Python standard library.
-
----
-
-### List all generators
+## Install
 
 ```bash
-python generators.py --list
+pip install b256tests
 ```
 
-### General usage
+## Usage (Python)
 
-```
-python generators.py <generator> [options]
-python generators.py <generator> --help
+```python
+from b256tests import GENERATORS, ALIASES
+
+# Access constants
+from b256tests import P, N
 ```
 
-Most generators read from **stdin** and write to **stdout**, making them easy to
-pipe:
+## CLI
+
+```bash
+b256tests --help
+b256tests --list
+b256tests <generator> [options]
+b256tests <generator> --help
+```
+
+### Examples
 
 ```bash
 # Generate 5 sequential 64-char hex values
-python generators.py seq-counter | head -5
+b256tests seq-counter | head -5
 
 # Pipe one generator's output into another
-python generators.py seq-counter | python generators.py hex-reverse | head -4
+b256tests seq-counter | b256tests hex-reverse | head -4
 
 # Generate random 256-bit integers with a seed, take the first 3
-python generators.py rand-seeded myseed | head -3
-```
+b256tests rand-seeded myseed | head -3
 
----
+# Text transformations
+echo "hello" | b256tests rot13
+
+# List all generators
+b256tests --list
+```
 
 ### Generator name mapping (old → new)
 
@@ -136,13 +132,6 @@ The following generators are new and have no legacy alias:
 | `rand-bytes` | `seed` | Infinite 256-bit hex strings assembled from random bytes |
 | `entropy-scan` | `filename start length [flen]` | Scan a binary file for high-entropy byte sequences |
 
-```bash
-python generators.py rand-seeded hello | head -3
-python generators.py rand-offset 42   | head -3
-python generators.py rand-bytes abc  | head -3
-python generators.py entropy-scan /path/to/binary 0 16
-```
-
 #### Infinite generators (no stdin required)
 
 | Generator | Description |
@@ -157,12 +146,6 @@ python generators.py entropy-scan /path/to/binary 0 16
 | `bit-concat` | 256-bit values from concatenated binary strings |
 | `iterated-pow-mod` | `((p % n)^i) % n` as 64-char hex |
 | `prob-gen` | Weighted bit-probability model output (numpy required) |
-
-```bash
-python generators.py seq-counter   | head -5
-python generators.py bit-concat | head -4
-python generators.py rand-reseed     | head -3
-```
 
 #### Stdin-driven generators
 
@@ -198,24 +181,17 @@ These read hex-encoded 256-bit values (one per line) from stdin unless noted:
 | `line-echo` | text lines | Echo lines (strip CR/LF) |
 | `rot13` | text lines | ROT13 transform |
 | `bit-stats` | hex lines | Per-bit-position frequency count |
-
-#### New generators
-
-These generators are new additions with no legacy alias:
-
-| Generator | Reads | Description |
-|-----------|-------|-------------|
-| `neg` | hex lines | Additive inverse (−x) mod N; one value per input line |
-| `abs-diff` | hex lines | Pairwise abs(a−b) mod N; no skip threshold |
-| `bit-not` | hex lines | Bitwise NOT (flip all 256 bits); no field reduction |
-| `bit-and` | hex lines | Pairwise bitwise AND; 256-bit word, no field reduction |
-| `bit-or` | hex lines | Pairwise bitwise OR; 256-bit word, no field reduction |
-| `shl` | hex lines | Left-shift each value by `--shift k` bits (default 1) |
-| `shr` | hex lines | Right-shift each value by `--shift k` bits (default 1) |
-| `gcd` | hex lines | GCD of each pair as 64-char hex |
-| `xgcd` | hex lines | Extended GCD per pair: `g x y` on each line |
-| `mod-div` | hex lines | Pairwise a·inv(b) mod N; skip non-invertible pairs |
-| `mod-reduce` | decimal/hex lines | Reduce x mod N → 64-char hex |
+| `neg` | hex lines | Additive inverse (−x) mod N |
+| `abs-diff` | hex lines | Pairwise abs(a−b) mod N |
+| `bit-not` | hex lines | Bitwise NOT (flip all 256 bits) |
+| `bit-and` | hex lines | Pairwise bitwise AND |
+| `bit-or` | hex lines | Pairwise bitwise OR |
+| `shl` | hex lines | Left-shift by `--shift k` bits |
+| `shr` | hex lines | Right-shift by `--shift k` bits |
+| `gcd` | hex lines | GCD of each pair |
+| `xgcd` | hex lines | Extended GCD per pair: `g x y` |
+| `mod-div` | hex lines | Pairwise a·inv(b) mod N |
+| `mod-reduce` | decimal/hex lines | Reduce mod N |
 
 **Semantics notes:**
 
@@ -229,81 +205,46 @@ These generators are new additions with no legacy alias:
 - `mod-reduce` accepts lines starting with `0x`/`0X` as hex, otherwise tries
   decimal first and then bare hex.
 
-```bash
-# neg — additive inverse
-echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
-    | python generators.py neg
+## API
 
-# bit-not — flip all 256 bits
-echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
-    | python generators.py bit-not
+### Constants
 
-# shl / shr — logical shifts (need at least 1 input line)
-python generators.py seq-counter | head -5 | python generators.py shl --shift 8
-python generators.py seq-counter | head -5 | python generators.py shr --shift 8
+- `P`: secp256k1 prime field modulus
+- `N`: secp256k1 curve order
 
-# abs-diff, bit-and, bit-or, gcd, xgcd, mod-div — pairwise (need ≥3 lines)
-python generators.py seq-counter | head -5 | python generators.py abs-diff | head -6
-python generators.py seq-counter | head -5 | python generators.py bit-and  | head -6
-python generators.py seq-counter | head -5 | python generators.py bit-or   | head -6
-python generators.py seq-counter | head -5 | python generators.py gcd      | head -6
-python generators.py seq-counter | head -5 | python generators.py xgcd     | head -6
-python generators.py seq-counter | head -5 | python generators.py mod-div  | head -6
+### Registry
 
-# mod-reduce — decimal or hex input
-echo "12345"      | python generators.py mod-reduce
-echo "0xdeadbeef" | python generators.py mod-reduce
-python generators.py seq-counter | head -3 | python generators.py mod-reduce
-```
+- `GENERATORS`: Dictionary of all available generator names to (function, description) tuples
+- `ALIASES`: Dictionary mapping deprecated names to current names
+
+## Development
 
 ```bash
-# Feed hex output from one generator into another
-python generators.py seq-counter | python generators.py xor-scan  | head -10
-python generators.py seq-counter | python generators.py mod-neg | head -6
-python generators.py rand-seeded seed1 | python generators.py bit-rotate | head -8
+git clone https://github.com/daedalus/256btests.git
+cd 256btests
+pip install -e ".[test]"
 
-# Text-based generators
-echo "hello" | python generators.py rot13
-printf "alice\nbob\n" | python generators.py str-cases
-printf "alice\nbob\n" | python generators.py str-numcat | head -20
+# run tests
+pytest
+
+# format
+ruff format src/ tests/
+
+# lint
+ruff check src/ tests/
+
+# type check
+mypy src/
 ```
 
----
+## Optional Dependencies
 
-### Stdin / stdout piping
+Some generators require additional packages:
 
-All generators write to stdout and read from stdin (where applicable), so they
-compose naturally with standard Unix tools:
-
-```bash
-# Generate and inspect
-python generators.py seq-counter | head -20
-
-# Chain generators
-python generators.py rand-seeded seed42 | python generators.py hex-reverse | head -5
-
-# Statistical analysis of generated output
-python generators.py rand-seeded seed1 | head -1000 | python generators.py bit-stats
-
-# Save output to a file
-python generators.py seq-counter | head -100 > data.txt
-```
-
----
-
-### Notes on known bugs fixed in the unified script
-
-The following bugs present in the original individual scripts would prevent
-execution under Python 3 and have been fixed in `generators.py`
-(the original files are left unchanged):
-
-| Original script | Bug | Fix applied |
-|-----------------|-----|-------------|
-| `testinv.py` | `K` (undefined name) on the P−k line | Changed to `k` (lowercase) |
-| `testsha256.py` | `bytes.encode('hex')` — Python 2 API | Changed to `bytes.hex()` |
-| `testSTRToSHA512.py` | `hashlib.update(str)` — needs bytes in Python 3 | Added `.encode('utf-8')` |
-| `testpivot.py` | `/` integer division (Python 2) causes `TypeError` | Changed to `//` |
-| `freader.py` | Python 2 bytes/string mixing in entropy calc; `s.encode('hex')` | Rewrote entropy to use native Python 3 bytes; `s.hex()` |
+| Generator | Package | Install |
+|-----------|---------|---------|
+| `luhn-counter` | python-stdnum | `pip install python-stdnum` |
+| `prob-gen` | numpy | `pip install numpy` |
 
 ---
 
@@ -311,51 +252,10 @@ execution under Python 3 and have been fixed in `generators.py`
 
 All original scripts (`256bitrepr.py`, `randomint.py`, etc.) remain in the
 repository and are **unchanged**.  They are considered **deprecated** in favour
-of `generators.py` but are kept for backwards compatibility.
+of `b256tests` but are kept for backwards compatibility.
 
 To install optional dependencies for the legacy scripts:
 
 ```bash
 pip install numpy python-stdnum
-```
-
----
-
-## Smoke tests
-
-Run a quick check across several generators:
-
-```bash
-# Finite / quick generators
-python generators.py seq-counter          | head -3
-python generators.py iterated-pow-mod     | head -3
-python generators.py cubic-shift          | head -3
-python generators.py rand-seeded testseed | head -3
-python generators.py rand-reseed          | head -3
-python generators.py rand-offset testseed | head -3
-python generators.py rand-bytes testseed  | head -3
-
-# Old names (deprecated aliases) still work
-python generators.py intcounter14         | head -3
-python generators.py randomint testseed   | head -3
-
-# Stdin-driven (provide a couple of hex lines)
-printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py bits-repr
-printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py to-hex64
-printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py additive-inv
-printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py mod-neg
-printf 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n' \
-    | python generators.py xor-scan | head -5
-
-# Text generators
-echo "hello" | python generators.py rot13
-echo "hello" | python generators.py sha256-chain | head -3
-echo "hello" | python generators.py sha512-hex
-
-# List
-python generators.py --list
 ```

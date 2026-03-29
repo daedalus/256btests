@@ -16,14 +16,14 @@ aliases and continue to work unchanged.
 """
 
 import argparse
-import sys
-import os
-import io
-import math
-import random
 import hashlib
+import io
 import itertools
+import math
 import operator
+import os
+import random
+import sys
 
 # ── secp256k1 constants ───────────────────────────────────────────────────────
 P = 115792089237316195423570985008687907853269984665640564039457584007908834671663
@@ -37,13 +37,15 @@ def hexify(i):
 
 get_bin = lambda x, n: format(x, "b").zfill(n)
 
-rol = lambda val, r_bits, max_bits: (val << r_bits % max_bits) & (
-    2**max_bits - 1
-) | ((val & (2**max_bits - 1)) >> (max_bits - (r_bits % max_bits)))
+rol = lambda val, r_bits, max_bits: (
+    (val << r_bits % max_bits) & (2**max_bits - 1)
+    | ((val & (2**max_bits - 1)) >> (max_bits - (r_bits % max_bits)))
+)
 
 ror = lambda val, r_bits, max_bits: (
-    (val & (2**max_bits - 1)) >> r_bits % max_bits
-) | (val << (max_bits - (r_bits % max_bits)) & (2**max_bits - 1))
+    ((val & (2**max_bits - 1)) >> r_bits % max_bits)
+    | (val << (max_bits - (r_bits % max_bits)) & (2**max_bits - 1))
+)
 
 
 # ── Generator implementations ─────────────────────────────────────────────────
@@ -240,32 +242,262 @@ def run_probagen(args):
     import numpy
 
     weights = [
-        11915, 11966, 12055, 11920, 11874, 11965, 11908, 11900, 11973, 11876,
-        12070, 11938, 11974, 11947, 11936, 11935, 12048, 12142, 12033, 12081,
-        11813, 11983, 11949, 12083, 12051, 12018, 11830, 12030, 11930, 12023,
-        11967, 11871, 12037, 11902, 11995, 12074, 11959, 12099, 11897, 11978,
-        11921, 11993, 11873, 12143, 12086, 11951, 11963, 11905, 12161, 11885,
-        12095, 11918, 12053, 11985, 12070, 11922, 11830, 12018, 11989, 12044,
-        11926, 12028, 11969, 12069, 12008, 12015, 12137, 12002, 12054, 12126,
-        12022, 11898, 12031, 12109, 11856, 11996, 12090, 11789, 11931, 11983,
-        12096, 11845, 11996, 12078, 12062, 12046, 11880, 11969, 11956, 12094,
-        12160, 12001, 11988, 12067, 12113, 12047, 11828, 11894, 11921, 11951,
-        12086, 11855, 11962, 12081, 12027, 12057, 12063, 12051, 12000, 12053,
-        12119, 11951, 12049, 12076, 12028, 11915, 12015, 12033, 12033, 12071,
-        12263, 12127, 12080, 11880, 11999, 12073, 12039, 11998, 11972, 12010,
-        11925, 12172, 11941, 11974, 12065, 12082, 11921, 12008, 12124, 11989,
-        12056, 11945, 12078, 11965, 11968, 11986, 11953, 11971, 12054, 11982,
-        12037, 11947, 11922, 11983, 11933, 11914, 11998, 12024, 12052, 12106,
-        12030, 11742, 11918, 11887, 12082, 12092, 12009, 11995, 11984, 11950,
-        11939, 12060, 12064, 11874, 12053, 12055, 12058, 11975, 11933, 11921,
-        11974, 12063, 11852, 12085, 11852, 11866, 12002, 11922, 12031, 11997,
-        12070, 12099, 12000, 11870, 12019, 11973, 11933, 12016, 11956, 11990,
-        11829, 12005, 11992, 12063, 12150, 11945, 12019, 12117, 12071, 12035,
-        12083, 11923, 11993, 11972, 11991, 12060, 12094, 12070, 12012, 11997,
-        12179, 12151, 12073, 11954, 11970, 12044, 11991, 12125, 12060, 11926,
-        12013, 12183, 12028, 12017, 12099, 12176, 11952, 12146, 12189, 12063,
-        12071, 12315, 12136, 12222, 12092, 12060, 12169, 12267, 11977, 12107,
-        12096, 12110, 12166, 12111, 12062, 12198,
+        11915,
+        11966,
+        12055,
+        11920,
+        11874,
+        11965,
+        11908,
+        11900,
+        11973,
+        11876,
+        12070,
+        11938,
+        11974,
+        11947,
+        11936,
+        11935,
+        12048,
+        12142,
+        12033,
+        12081,
+        11813,
+        11983,
+        11949,
+        12083,
+        12051,
+        12018,
+        11830,
+        12030,
+        11930,
+        12023,
+        11967,
+        11871,
+        12037,
+        11902,
+        11995,
+        12074,
+        11959,
+        12099,
+        11897,
+        11978,
+        11921,
+        11993,
+        11873,
+        12143,
+        12086,
+        11951,
+        11963,
+        11905,
+        12161,
+        11885,
+        12095,
+        11918,
+        12053,
+        11985,
+        12070,
+        11922,
+        11830,
+        12018,
+        11989,
+        12044,
+        11926,
+        12028,
+        11969,
+        12069,
+        12008,
+        12015,
+        12137,
+        12002,
+        12054,
+        12126,
+        12022,
+        11898,
+        12031,
+        12109,
+        11856,
+        11996,
+        12090,
+        11789,
+        11931,
+        11983,
+        12096,
+        11845,
+        11996,
+        12078,
+        12062,
+        12046,
+        11880,
+        11969,
+        11956,
+        12094,
+        12160,
+        12001,
+        11988,
+        12067,
+        12113,
+        12047,
+        11828,
+        11894,
+        11921,
+        11951,
+        12086,
+        11855,
+        11962,
+        12081,
+        12027,
+        12057,
+        12063,
+        12051,
+        12000,
+        12053,
+        12119,
+        11951,
+        12049,
+        12076,
+        12028,
+        11915,
+        12015,
+        12033,
+        12033,
+        12071,
+        12263,
+        12127,
+        12080,
+        11880,
+        11999,
+        12073,
+        12039,
+        11998,
+        11972,
+        12010,
+        11925,
+        12172,
+        11941,
+        11974,
+        12065,
+        12082,
+        11921,
+        12008,
+        12124,
+        11989,
+        12056,
+        11945,
+        12078,
+        11965,
+        11968,
+        11986,
+        11953,
+        11971,
+        12054,
+        11982,
+        12037,
+        11947,
+        11922,
+        11983,
+        11933,
+        11914,
+        11998,
+        12024,
+        12052,
+        12106,
+        12030,
+        11742,
+        11918,
+        11887,
+        12082,
+        12092,
+        12009,
+        11995,
+        11984,
+        11950,
+        11939,
+        12060,
+        12064,
+        11874,
+        12053,
+        12055,
+        12058,
+        11975,
+        11933,
+        11921,
+        11974,
+        12063,
+        11852,
+        12085,
+        11852,
+        11866,
+        12002,
+        11922,
+        12031,
+        11997,
+        12070,
+        12099,
+        12000,
+        11870,
+        12019,
+        11973,
+        11933,
+        12016,
+        11956,
+        11990,
+        11829,
+        12005,
+        11992,
+        12063,
+        12150,
+        11945,
+        12019,
+        12117,
+        12071,
+        12035,
+        12083,
+        11923,
+        11993,
+        11972,
+        11991,
+        12060,
+        12094,
+        12070,
+        12012,
+        11997,
+        12179,
+        12151,
+        12073,
+        11954,
+        11970,
+        12044,
+        11991,
+        12125,
+        12060,
+        11926,
+        12013,
+        12183,
+        12028,
+        12017,
+        12099,
+        12176,
+        11952,
+        12146,
+        12189,
+        12063,
+        12071,
+        12315,
+        12136,
+        12222,
+        12092,
+        12060,
+        12169,
+        12267,
+        11977,
+        12107,
+        12096,
+        12110,
+        12166,
+        12111,
+        12062,
+        12198,
     ]
 
     count = 24414.0
@@ -392,9 +624,7 @@ def run_testSTRToSHA512(args):
 
 def run_testadd(args):
     """Read hex lines from stdin; print all pairwise sums mod N above skip threshold."""
-    skip = int(
-        "00000000000000000000000000000000000000000000000000000027eb78574a", 16
-    )
+    skip = int("00000000000000000000000000000000000000000000000000000027eb78574a", 16)
     data = []
     for line in sys.stdin:
         line = line.replace("0x", "").replace("L", "").replace("\n", "")
@@ -826,9 +1056,7 @@ def run_teststr3(args):
 
 def run_testsub(args):
     """Read hex lines from stdin; print pairwise absolute differences mod N above threshold."""
-    skip = int(
-        "00000000000000000000000000000000000000000000000000000027eb78574a", 16
-    )
+    skip = int("00000000000000000000000000000000000000000000000000000027eb78574a", 16)
     data = []
     for line in sys.stdin:
         line = line.replace("0x", "").replace("L", "").replace("\n", "")
@@ -936,10 +1164,16 @@ def run_mod_div(args):
             if i != j:
                 a, b = data[i], data[j]
                 if b == 0:
-                    print(f"mod-div: skipping pair ({i},{j}): divisor is zero", file=sys.stderr)
+                    print(
+                        f"mod-div: skipping pair ({i},{j}): divisor is zero",
+                        file=sys.stderr,
+                    )
                     continue
                 if math.gcd(b, N) != 1:
-                    print(f"mod-div: skipping pair ({i},{j}): gcd(b,N)={math.gcd(b,N)} (not invertible)", file=sys.stderr)
+                    print(
+                        f"mod-div: skipping pair ({i},{j}): gcd(b,N)={math.gcd(b, N)} (not invertible)",
+                        file=sys.stderr,
+                    )
                     continue
                 result = (a * pow(b, -1, N)) % N
                 print(hexify(result))
@@ -1372,48 +1606,48 @@ GENERATORS = {
 # Both old and new names are accepted by the CLI; old names print a deprecation
 # notice and will be removed in a future release.
 ALIASES = {
-    "256bitrepr":          "bits-repr",
-    "64hex":               "to-hex64",
-    "freader":             "entropy-scan",
-    "intcounter6":         "secp-pow-mod",
-    "intcounter9":         "weierstrass-sqrt",
-    "intcounter10":        "luhn-counter",
-    "intcounter14":        "seq-counter",
-    "intcounter15":        "cubic-shift",
-    "perms":               "word-perms",
-    "perms2":              "alpha-perms",
-    "perms3":              "str-perms",
-    "probagen":            "prob-gen",
-    "randomint":           "rand-seeded",
-    "randomint2":          "rand-reseed",
-    "randomint3":          "rand-offset",
-    "randomint4":          "rand-bytes",
-    "replacer":            "line-echo",
-    "simple-stat-analysis":  "bit-stats",
-    "testSTRToSHA512":     "sha512-hex",
-    "testadd":             "mod-add",
-    "testbitpatterns":     "bit-concat",
-    "testboolefuncs":      "bitwise-ops",
-    "testconcatnumbers":   "str-numcat",
-    "testinv":             "additive-inv",
-    "testmean":            "mean-sub",
-    "testmedian":          "pair-avg",
-    "testmodulo3":         "iterated-pow-mod",
-    "testmult":            "mod-mul",
-    "testpivot":           "str-pivot",
-    "testpwr":             "pow-range",
-    "testrevert":          "hex-reverse",
-    "testrot":             "bit-rotate",
-    "testsec256k1":        "secp256k1-ops",
-    "testsha256":          "sha256-chain",
-    "testsqrt":            "iter-sqrt",
-    "teststr":             "pair-concat",
-    "teststr2":            "str-cases",
-    "teststr3":            "str-join-cases",
-    "testsub":             "mod-sub",
-    "testsub256":          "mod-neg",
-    "testxor":             "xor-scan",
-    "testxor2":            "xor-pairs",
+    "256bitrepr": "bits-repr",
+    "64hex": "to-hex64",
+    "freader": "entropy-scan",
+    "intcounter6": "secp-pow-mod",
+    "intcounter9": "weierstrass-sqrt",
+    "intcounter10": "luhn-counter",
+    "intcounter14": "seq-counter",
+    "intcounter15": "cubic-shift",
+    "perms": "word-perms",
+    "perms2": "alpha-perms",
+    "perms3": "str-perms",
+    "probagen": "prob-gen",
+    "randomint": "rand-seeded",
+    "randomint2": "rand-reseed",
+    "randomint3": "rand-offset",
+    "randomint4": "rand-bytes",
+    "replacer": "line-echo",
+    "simple-stat-analysis": "bit-stats",
+    "testSTRToSHA512": "sha512-hex",
+    "testadd": "mod-add",
+    "testbitpatterns": "bit-concat",
+    "testboolefuncs": "bitwise-ops",
+    "testconcatnumbers": "str-numcat",
+    "testinv": "additive-inv",
+    "testmean": "mean-sub",
+    "testmedian": "pair-avg",
+    "testmodulo3": "iterated-pow-mod",
+    "testmult": "mod-mul",
+    "testpivot": "str-pivot",
+    "testpwr": "pow-range",
+    "testrevert": "hex-reverse",
+    "testrot": "bit-rotate",
+    "testsec256k1": "secp256k1-ops",
+    "testsha256": "sha256-chain",
+    "testsqrt": "iter-sqrt",
+    "teststr": "pair-concat",
+    "teststr2": "str-cases",
+    "teststr3": "str-join-cases",
+    "testsub": "mod-sub",
+    "testsub256": "mod-neg",
+    "testxor": "xor-scan",
+    "testxor2": "xor-pairs",
 }
 
 
@@ -1487,7 +1721,14 @@ def _build_parser():
         sp.set_defaults(func=GENERATORS[name][0])
 
     # All remaining generators — no special arguments
-    _special = {"rand-seeded", "rand-offset", "rand-bytes", "entropy-scan", "shl", "shr"}
+    _special = {
+        "rand-seeded",
+        "rand-offset",
+        "rand-bytes",
+        "entropy-scan",
+        "shl",
+        "shr",
+    }
     for name, (func, desc) in GENERATORS.items():
         if name not in _special:
             old_aliases = _REVERSE_ALIASES.get(name, [])

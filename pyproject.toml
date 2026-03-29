@@ -1,0 +1,94 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "b256tests"
+version = "0.1.0"
+description = "A collection of 256-bit integer generators and test scripts, unified under a single CLI tool"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Dario Clavijo", email = "clavijodario@gmail.com"}
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "mypy",
+    "hatch",
+    "pip-api",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-asyncio",
+    "hypothesis",
+]
+lint = [
+    "ruff",
+    "mypy",
+]
+all = ["b256tests[dev,test,lint]"]
+optional = [
+    "numpy",
+    "python-stdnum",
+]
+
+[project.scripts]
+b256tests = "b256tests.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/daedalus/256btests"
+Repository = "https://github.com/daedalus/256btests"
+Issues = "https://github.com/daedalus/256btests/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/b256tests"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/b256tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "ANN", "TCH", "N", "C4", "ARG"]
+ignore = ["E501", "ANN", "ARG", "N802", "N806", "E741", "C414", "E731", "F841"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short --cov=src --cov-fail-under=10"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+exclude = ["tests/*", "*/__init__.py"]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
